@@ -17,6 +17,7 @@ import {
 import { SecurityEvent, TimeSeriesDataPoint } from './types/telemetry';
 import { MetricCards } from './components/MetricCards';
 import { AnalyticsCharts } from './components/AnalyticsCharts';
+import { AnomalyInspector } from './components/AnomalyInspector';
 import { LiveEventFeed } from './components/LiveEventFeed';
 
 export default function App() {
@@ -69,7 +70,7 @@ export default function App() {
                 NEXUS AI
               </span>
               <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-primary/20 text-indigo-400 border border-primary/30 font-semibold">
-                v0.3.0 Visuals Live
+                v0.4.0 ML Engine
               </span>
             </div>
             <p className="text-xs text-slate-400 font-mono">Threat &amp; Anomaly Intelligence</p>
@@ -128,6 +129,11 @@ export default function App() {
           <AnalyticsCharts timeSeriesData={timeSeries} distributionData={distribution} />
         </section>
 
+        {/* Machine Learning Outlier & Anomaly Inspector */}
+        <section>
+          <AnomalyInspector events={events} />
+        </section>
+
         {/* Live Security Event Stream Feed */}
         <section>
           <LiveEventFeed events={events} onTriggerSimulation={handleSimulateAttack} />
@@ -142,7 +148,7 @@ export default function App() {
             </h2>
             <div className="flex items-center gap-2 text-xs font-mono text-accent-cyan">
               <GitBranch className="w-3.5 h-3.5" />
-              <span>Milestone 3 Completed</span>
+              <span>Milestone 4 Completed</span>
             </div>
           </div>
 
@@ -163,20 +169,20 @@ export default function App() {
               <p className="text-slate-400 text-[11px]">Real-time telemetry engine, 4 KPI cards &amp; interactive attack simulator.</p>
             </div>
 
-            <div className="p-4 rounded-xl border border-indigo-500/40 bg-indigo-500/10 shadow-lg shadow-indigo-500/5">
-              <div className="flex items-center justify-between text-indigo-400 font-semibold mb-1">
+            <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5">
+              <div className="flex items-center justify-between text-accent-emerald font-semibold mb-1">
                 <span>Step 3: ML Analytics Charts</span>
-                <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
+                <CheckCircle2 className="w-4 h-4" />
               </div>
               <p className="text-slate-400 text-[11px]">Time-series anomaly chart &amp; attack severity distribution graphs.</p>
             </div>
 
-            <div className="p-4 rounded-xl border border-surface-border bg-surface-card/60 opacity-80">
-              <div className="flex items-center justify-between text-slate-300 font-semibold mb-1">
+            <div className="p-4 rounded-xl border border-indigo-500/40 bg-indigo-500/10 shadow-lg shadow-indigo-500/5">
+              <div className="flex items-center justify-between text-indigo-400 font-semibold mb-1">
                 <span>Step 4: ML Anomaly Detector</span>
-                <span className="text-[10px] text-accent-amber font-mono">NEXT UP</span>
+                <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
               </div>
-              <p className="text-slate-400 text-[11px]">Statistical Z-score &amp; IQR outlier detection scoring engine.</p>
+              <p className="text-slate-400 text-[11px]">Statistical Z-score &amp; IQR outlier detection scoring engine with slider.</p>
             </div>
           </div>
         </section>
