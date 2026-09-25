@@ -5,7 +5,8 @@ import {
   Layers, 
   GitBranch,
   CheckCircle2,
-  Bell
+  Bell,
+  Sparkles
 } from 'lucide-react';
 import { 
   INITIAL_SECURITY_EVENTS, 
@@ -19,6 +20,7 @@ import { MetricCards } from './components/MetricCards';
 import { AnalyticsCharts } from './components/AnalyticsCharts';
 import { AnomalyInspector } from './components/AnomalyInspector';
 import { LiveEventFeed } from './components/LiveEventFeed';
+import { AiCopilotSidebar } from './components/AiCopilotSidebar';
 
 export default function App() {
   const [systemTime, setSystemTime] = useState(new Date().toLocaleTimeString());
@@ -56,6 +58,23 @@ export default function App() {
     });
   };
 
+  // Handler for AI Copilot threat mitigation execution
+  const handleMitigateThreat = (target: string) => {
+    setEvents(prev =>
+      prev.map(event => {
+        if (event.targetNode.includes(target) || event.sourceIp.includes(target) || event.id.includes(target)) {
+          return {
+            ...event,
+            status: 'mitigated',
+            anomalyScore: Math.max(1.0, parseFloat((event.anomalyScore * 0.4).toFixed(1))),
+            details: `[CONTAINED BY AI COPILOT] ${event.details}`
+          };
+        }
+        return event;
+      })
+    );
+  };
+
   return (
     <div className="min-h-screen bg-background text-slate-100 flex flex-col font-sans">
       {/* Top Navigation Bar */}
@@ -70,7 +89,7 @@ export default function App() {
                 NEXUS AI
               </span>
               <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-primary/20 text-indigo-400 border border-primary/30 font-semibold">
-                v0.4.0 ML Engine
+                v0.5.0 Copilot Live
               </span>
             </div>
             <p className="text-xs text-slate-400 font-mono">Threat &amp; Anomaly Intelligence</p>
@@ -129,14 +148,16 @@ export default function App() {
           <AnalyticsCharts timeSeriesData={timeSeries} distributionData={distribution} />
         </section>
 
-        {/* Machine Learning Outlier & Anomaly Inspector */}
-        <section>
-          <AnomalyInspector events={events} />
-        </section>
+        {/* Intelligence Split: ML Inspector & AI Copilot */}
+        <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-6">
+            <AnomalyInspector events={events} />
+            <LiveEventFeed events={events} onTriggerSimulation={handleSimulateAttack} />
+          </div>
 
-        {/* Live Security Event Stream Feed */}
-        <section>
-          <LiveEventFeed events={events} onTriggerSimulation={handleSimulateAttack} />
+          <div className="lg:col-span-1">
+            <AiCopilotSidebar events={events} onMitigateThreat={handleMitigateThreat} />
+          </div>
         </section>
 
         {/* Architecture & Milestone Progress */}
@@ -148,7 +169,7 @@ export default function App() {
             </h2>
             <div className="flex items-center gap-2 text-xs font-mono text-accent-cyan">
               <GitBranch className="w-3.5 h-3.5" />
-              <span>Milestone 4 Completed</span>
+              <span>Milestone 5 Completed</span>
             </div>
           </div>
 
@@ -179,10 +200,13 @@ export default function App() {
 
             <div className="p-4 rounded-xl border border-indigo-500/40 bg-indigo-500/10 shadow-lg shadow-indigo-500/5">
               <div className="flex items-center justify-between text-indigo-400 font-semibold mb-1">
-                <span>Step 4: ML Anomaly Detector</span>
+                <span className="flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                  Step 5: AI SecOps Copilot
+                </span>
                 <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
               </div>
-              <p className="text-slate-400 text-[11px]">Statistical Z-score &amp; IQR outlier detection scoring engine with slider.</p>
+              <p className="text-slate-400 text-[11px]">Autonomous incident assistant with MITRE ATT&amp;CK mitigation triggers.</p>
             </div>
           </div>
         </section>
