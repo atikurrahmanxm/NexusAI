@@ -7,7 +7,8 @@ import {
   CheckCircle2,
   Bell,
   Sparkles,
-  Search
+  Search,
+  Terminal as TerminalIcon
 } from 'lucide-react';
 import { 
   INITIAL_SECURITY_EVENTS, 
@@ -16,6 +17,7 @@ import {
   generateSyntheticSecurityEvent,
   getThreatDistribution
 } from './services/telemetryEngine';
+import { checkBackendHealth, BackendHealthStatus } from './services/apiBridge';
 import { SecurityEvent, TimeSeriesDataPoint, IncidentStatus } from './types/telemetry';
 import { MetricCards } from './components/MetricCards';
 import { AnalyticsCharts } from './components/AnalyticsCharts';
@@ -28,16 +30,33 @@ export default function App() {
   const [systemTime, setSystemTime] = useState(new Date().toLocaleTimeString());
   const [events, setEvents] = useState<SecurityEvent[]>(INITIAL_SECURITY_EVENTS);
   const [timeSeries, setTimeSeries] = useState<TimeSeriesDataPoint[]>(INITIAL_TIMESERIES_DATA);
+  const [backendHealth, setBackendHealth] = useState<BackendHealthStatus>({
+    connected: false,
+    status: 'standby',
+    engine: 'In-Browser ML Runtime'
+  });
 
   const metrics = calculateSystemMetrics(events);
   const distribution = getThreatDistribution(events);
 
-  // Live real-time clock
+  // Live real-time clock & backend health probe
   useEffect(() => {
     const timer = setInterval(() => {
       setSystemTime(new Date().toLocaleTimeString());
     }, 1000);
-    return () => clearInterval(timer);
+
+    const probeBackend = async () => {
+      const health = await checkBackendHealth();
+      setBackendHealth(health);
+    };
+
+    probeBackend();
+    const healthInterval = setInterval(probeBackend, 10000);
+
+    return () => {
+      clearInterval(timer);
+      clearInterval(healthInterval);
+    };
   }, []);
 
   // Handler for simulating real-time attack event
@@ -98,7 +117,7 @@ export default function App() {
                 NEXUS AI
               </span>
               <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-primary/20 text-indigo-400 border border-primary/30 font-semibold">
-                v0.6.0 SecOps Suite
+                v0.7.0 Fullstack ML
               </span>
             </div>
             <p className="text-xs text-slate-400 font-mono">Threat &amp; Anomaly Intelligence</p>
@@ -106,14 +125,23 @@ export default function App() {
         </div>
 
         {/* Live System Indicators */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4 sm:gap-6">
+          {/* Backend Status Badge */}
+          <div className="hidden md:flex items-center gap-2 text-xs font-mono px-3 py-1.5 rounded-lg bg-surface-card border border-surface-border">
+            <TerminalIcon className={`w-3.5 h-3.5 ${backendHealth.connected ? 'text-accent-emerald' : 'text-accent-cyan'}`} />
+            <span className="text-slate-400">ENGINE:</span>
+            <span className={`font-semibold ${backendHealth.connected ? 'text-accent-emerald' : 'text-accent-cyan'}`}>
+              {backendHealth.connected ? 'Python FastAPI (Active)' : 'Hybrid ML Ready'}
+            </span>
+          </div>
+
           <div className="hidden sm:flex items-center gap-2 text-xs font-mono px-3 py-1.5 rounded-lg bg-surface-card border border-surface-border">
             <Radio className="w-3.5 h-3.5 text-accent-emerald animate-pulse" />
             <span className="text-slate-400">TELEMETRY:</span>
             <span className="text-accent-emerald font-semibold">ONLINE</span>
           </div>
 
-          <div className="hidden md:flex items-center gap-2 text-xs font-mono px-3 py-1.5 rounded-lg bg-surface-card border border-surface-border">
+          <div className="hidden lg:flex items-center gap-2 text-xs font-mono px-3 py-1.5 rounded-lg bg-surface-card border border-surface-border">
             <span className="text-slate-400">SYS_TIME:</span>
             <span className="text-accent-cyan">{systemTime}</span>
           </div>
@@ -126,7 +154,7 @@ export default function App() {
             <div className="w-8 h-8 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center text-xs font-bold text-white shadow-md">
               AR
             </div>
-            <div className="hidden lg:block text-left">
+            <div className="hidden xl:block text-left">
               <p className="text-xs font-semibold text-slate-200">Atik Rahman</p>
               <p className="text-[10px] text-accent-emerald">SecOps Commander</p>
             </div>
@@ -186,7 +214,7 @@ export default function App() {
             </h2>
             <div className="flex items-center gap-2 text-xs font-mono text-accent-cyan">
               <GitBranch className="w-3.5 h-3.5" />
-              <span>Milestone 6 Completed</span>
+              <span>Milestone 7 Completed (Fullstack Live)</span>
             </div>
           </div>
 
@@ -213,18 +241,18 @@ export default function App() {
                   <Sparkles className="w-3.5 h-3.5 text-amber-300" />
                   AI SecOps Copilot
                 </span>
-                <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
+                <CheckCircle2 className="w-4 h-4" />
               </div>
               <p className="text-slate-400 text-[11px]">Autonomous incident assistant with MITRE ATT&amp;CK mitigation triggers.</p>
             </div>
 
-            <div className="p-4 rounded-xl border border-indigo-500/40 bg-indigo-500/10 shadow-lg shadow-indigo-500/5">
-              <div className="flex items-center justify-between text-indigo-400 font-semibold mb-1">
+            <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5">
+              <div className="flex items-center justify-between text-accent-emerald font-semibold mb-1">
                 <span className="flex items-center gap-1.5">
                   <Search className="w-3.5 h-3.5 text-accent-cyan" />
-                  Step 6: Forensic Audit
+                  Forensic Table &amp; CSV
                 </span>
-                <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
+                <CheckCircle2 className="w-4 h-4" />
               </div>
               <p className="text-slate-400 text-[11px]">Multi-filter forensic table, raw packet payload dump &amp; CSV exporter.</p>
             </div>
