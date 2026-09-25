@@ -1,4 +1,4 @@
-import { SecurityEvent, SystemMetrics, AttackType, SeverityLevel } from '../types/telemetry';
+import { SecurityEvent, SystemMetrics, AttackType, SeverityLevel, TimeSeriesDataPoint, ThreatDistributionItem } from '../types/telemetry';
 
 const SAMPLE_ATTACK_IPS = [
   '185.220.101.5',
@@ -166,3 +166,43 @@ export function generateSyntheticSecurityEvent(): SecurityEvent {
     status: isAttack ? 'flagged' : 'resolved'
   };
 }
+
+export const INITIAL_TIMESERIES_DATA: TimeSeriesDataPoint[] = [
+  { time: '02:00', threatActivity: 12, anomalyScore: 1.8 },
+  { time: '04:00', threatActivity: 18, anomalyScore: 2.3 },
+  { time: '06:00', threatActivity: 14, anomalyScore: 2.0 },
+  { time: '08:00', threatActivity: 32, anomalyScore: 4.1 },
+  { time: '10:00', threatActivity: 45, anomalyScore: 5.6 },
+  { time: '12:00', threatActivity: 40, anomalyScore: 4.9 },
+  { time: '14:00', threatActivity: 88, anomalyScore: 8.7, isSpike: true },
+  { time: '16:00', threatActivity: 58, anomalyScore: 6.3 },
+  { time: '18:00', threatActivity: 42, anomalyScore: 4.5 },
+  { time: '20:00', threatActivity: 36, anomalyScore: 3.8 },
+  { time: '22:00', threatActivity: 64, anomalyScore: 7.2 },
+  { time: 'Now', threatActivity: 48, anomalyScore: 5.5 }
+];
+
+export function getThreatDistribution(events: SecurityEvent[]): ThreatDistributionItem[] {
+  const counts: Record<string, number> = {
+    DDoS: 0,
+    SQLi: 0,
+    BruteForce: 0,
+    Malware: 0,
+    PortScan: 0,
+  };
+
+  events.forEach(e => {
+    if (e.attackType in counts) {
+      counts[e.attackType]++;
+    }
+  });
+
+  return [
+    { name: 'DDoS', count: Math.max(counts.DDoS, 8), color: '#8B5CF6' },
+    { name: 'SQLi', count: Math.max(counts.SQLi, 5), color: '#F43F5E' },
+    { name: 'BruteForce', count: Math.max(counts.BruteForce, 6), color: '#F59E0B' },
+    { name: 'Malware', count: Math.max(counts.Malware, 4), color: '#EC4899' },
+    { name: 'PortScan', count: Math.max(counts.PortScan, 7), color: '#06B6D4' }
+  ];
+}
+

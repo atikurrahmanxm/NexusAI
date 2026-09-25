@@ -41,3 +41,17 @@ export interface ThreatDistribution {
   count: number;
   percentage: number;
 }
+
+export interface TimeSeriesDataPoint {
+  time: string;
+  threatActivity: number;
+  anomalyScore: number;
+  isSpike?: boolean;
+}
+
+export interface ThreatDistributionItem {
+  name: string;
+  count: number;
+  color: string;
+}
+
