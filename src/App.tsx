@@ -6,7 +6,8 @@ import {
   GitBranch,
   CheckCircle2,
   Bell,
-  Sparkles
+  Sparkles,
+  Search
 } from 'lucide-react';
 import { 
   INITIAL_SECURITY_EVENTS, 
@@ -15,12 +16,13 @@ import {
   generateSyntheticSecurityEvent,
   getThreatDistribution
 } from './services/telemetryEngine';
-import { SecurityEvent, TimeSeriesDataPoint } from './types/telemetry';
+import { SecurityEvent, TimeSeriesDataPoint, IncidentStatus } from './types/telemetry';
 import { MetricCards } from './components/MetricCards';
 import { AnalyticsCharts } from './components/AnalyticsCharts';
 import { AnomalyInspector } from './components/AnomalyInspector';
 import { LiveEventFeed } from './components/LiveEventFeed';
 import { AiCopilotSidebar } from './components/AiCopilotSidebar';
+import { ForensicTable } from './components/ForensicTable';
 
 export default function App() {
   const [systemTime, setSystemTime] = useState(new Date().toLocaleTimeString());
@@ -41,7 +43,7 @@ export default function App() {
   // Handler for simulating real-time attack event
   const handleSimulateAttack = () => {
     const newEvent = generateSyntheticSecurityEvent();
-    setEvents(prev => [newEvent, ...prev.slice(0, 19)]); // Keep latest 20 events
+    setEvents(prev => [newEvent, ...prev.slice(0, 24)]); // Keep latest 25 events
 
     // Dynamically update the latest point on the time-series chart
     const nowTime = new Date().toTimeString().substring(0, 5);
@@ -75,6 +77,13 @@ export default function App() {
     );
   };
 
+  // Handler for manual status changes in the forensic table
+  const handleUpdateEventStatus = (eventId: string, newStatus: IncidentStatus) => {
+    setEvents(prev =>
+      prev.map(e => e.id === eventId ? { ...e, status: newStatus } : e)
+    );
+  };
+
   return (
     <div className="min-h-screen bg-background text-slate-100 flex flex-col font-sans">
       {/* Top Navigation Bar */}
@@ -89,7 +98,7 @@ export default function App() {
                 NEXUS AI
               </span>
               <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-primary/20 text-indigo-400 border border-primary/30 font-semibold">
-                v0.5.0 Copilot Live
+                v0.6.0 SecOps Suite
               </span>
             </div>
             <p className="text-xs text-slate-400 font-mono">Threat &amp; Anomaly Intelligence</p>
@@ -160,6 +169,14 @@ export default function App() {
           </div>
         </section>
 
+        {/* Forensic Deep Packet Investigation & Filterable Audit Table */}
+        <section>
+          <ForensicTable 
+            events={events} 
+            onUpdateEventStatus={handleUpdateEventStatus} 
+          />
+        </section>
+
         {/* Architecture & Milestone Progress */}
         <section className="space-y-4 pt-4 border-t border-surface-border/60">
           <div className="flex items-center justify-between">
@@ -169,44 +186,47 @@ export default function App() {
             </h2>
             <div className="flex items-center gap-2 text-xs font-mono text-accent-cyan">
               <GitBranch className="w-3.5 h-3.5" />
-              <span>Milestone 5 Completed</span>
+              <span>Milestone 6 Completed</span>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
             <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5">
               <div className="flex items-center justify-between text-accent-emerald font-semibold mb-1">
-                <span>Step 1: Core Shell</span>
+                <span>Core Telemetry &amp; KPIs</span>
                 <CheckCircle2 className="w-4 h-4" />
               </div>
-              <p className="text-slate-400 text-[11px]">Vite, React, TypeScript, Tailwind and dark design architecture.</p>
+              <p className="text-slate-400 text-[11px]">Vite, React 18, TypeScript, Tailwind, and real-time metric cards.</p>
             </div>
 
             <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5">
               <div className="flex items-center justify-between text-accent-emerald font-semibold mb-1">
-                <span>Step 2: Threat Metrics</span>
+                <span>ML Analytics Visuals</span>
                 <CheckCircle2 className="w-4 h-4" />
               </div>
-              <p className="text-slate-400 text-[11px]">Real-time telemetry engine, 4 KPI cards &amp; interactive attack simulator.</p>
+              <p className="text-slate-400 text-[11px]">Time-series anomaly dual-axis chart &amp; attack vector distributions.</p>
             </div>
 
             <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5">
               <div className="flex items-center justify-between text-accent-emerald font-semibold mb-1">
-                <span>Step 3: ML Analytics Charts</span>
-                <CheckCircle2 className="w-4 h-4" />
+                <span className="flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                  AI SecOps Copilot
+                </span>
+                <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
               </div>
-              <p className="text-slate-400 text-[11px]">Time-series anomaly chart &amp; attack severity distribution graphs.</p>
+              <p className="text-slate-400 text-[11px]">Autonomous incident assistant with MITRE ATT&amp;CK mitigation triggers.</p>
             </div>
 
             <div className="p-4 rounded-xl border border-indigo-500/40 bg-indigo-500/10 shadow-lg shadow-indigo-500/5">
               <div className="flex items-center justify-between text-indigo-400 font-semibold mb-1">
                 <span className="flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-                  Step 5: AI SecOps Copilot
+                  <Search className="w-3.5 h-3.5 text-accent-cyan" />
+                  Step 6: Forensic Audit
                 </span>
                 <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
               </div>
-              <p className="text-slate-400 text-[11px]">Autonomous incident assistant with MITRE ATT&amp;CK mitigation triggers.</p>
+              <p className="text-slate-400 text-[11px]">Multi-filter forensic table, raw packet payload dump &amp; CSV exporter.</p>
             </div>
           </div>
         </section>
