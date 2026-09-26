@@ -33,3 +33,32 @@
   backdrop-filter: blur(12px);
   border: 1px solid rgba(31, 46, 69, 0.8);
 }
+
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+  }
+
+  header, footer, nav, button, .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  .printable-dossier {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+}
+

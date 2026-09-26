@@ -7,7 +7,7 @@ import {
   CheckCircle2,
   Bell,
   UploadCloud,
-  Lock,
+  FileText,
   Terminal as TerminalIcon
 } from 'lucide-react';
 import { 
@@ -28,12 +28,14 @@ import { AiCopilotSidebar } from './components/AiCopilotSidebar';
 import { FirewallPolicyGenerator } from './components/FirewallPolicyGenerator';
 import { ForensicTable } from './components/ForensicTable';
 import { LogIngestionModal } from './components/LogIngestionModal';
+import { ExecutiveReportModal } from './components/ExecutiveReportModal';
 
 export default function App() {
   const [systemTime, setSystemTime] = useState(new Date().toLocaleTimeString());
   const [events, setEvents] = useState<SecurityEvent[]>(INITIAL_SECURITY_EVENTS);
   const [timeSeries, setTimeSeries] = useState<TimeSeriesDataPoint[]>(INITIAL_TIMESERIES_DATA);
   const [isLogModalOpen, setIsLogModalOpen] = useState(false);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [backendHealth, setBackendHealth] = useState<BackendHealthStatus>({
     connected: false,
     status: 'standby',
@@ -140,7 +142,7 @@ export default function App() {
                 NEXUS AI
               </span>
               <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-primary/20 text-indigo-400 border border-primary/30 font-semibold">
-                v1.0.0 SecOps Suite
+                v1.1.0 Executive Ready
               </span>
             </div>
             <p className="text-xs text-slate-400 font-mono">Threat &amp; Anomaly Intelligence</p>
@@ -196,6 +198,14 @@ export default function App() {
             </div>
 
             <div className="flex items-center gap-3">
+              <button
+                onClick={() => setIsReportModalOpen(true)}
+                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-surface border border-accent-emerald/40 hover:border-accent-emerald text-accent-emerald hover:text-white font-mono text-xs font-semibold transition-all shadow-lg shadow-emerald-500/5 active:scale-95"
+              >
+                <FileText className="w-4 h-4" />
+                <span>Executive Audit (PDF)</span>
+              </button>
+
               <button
                 onClick={() => setIsLogModalOpen(true)}
                 className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-surface border border-indigo-500/40 hover:border-indigo-500 text-indigo-300 hover:text-white font-mono text-xs font-semibold transition-all shadow-lg shadow-indigo-500/5 active:scale-95"
@@ -258,7 +268,7 @@ export default function App() {
             </h2>
             <div className="flex items-center gap-2 text-xs font-mono text-accent-cyan">
               <GitBranch className="w-3.5 h-3.5" />
-              <span>Milestone 10 Completed (Firewall Compiler Live)</span>
+              <span>Milestone 11 Completed (Executive Report Live)</span>
             </div>
           </div>
 
@@ -281,21 +291,21 @@ export default function App() {
 
             <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5">
               <div className="flex items-center justify-between text-accent-emerald font-semibold mb-1">
-                <span>Threat Map &amp; Parser</span>
+                <span>Threat Map &amp; Firewall</span>
                 <CheckCircle2 className="w-4 h-4" />
               </div>
-              <p className="text-slate-400 text-[11px]">Geospatial attack vector trajectories and raw log file ingestion.</p>
+              <p className="text-slate-400 text-[11px]">Geospatial attack trajectories &amp; automated iptables/WAF synthesis.</p>
             </div>
 
             <div className="p-4 rounded-xl border border-indigo-500/40 bg-indigo-500/10 shadow-lg shadow-indigo-500/5">
               <div className="flex items-center justify-between text-indigo-400 font-semibold mb-1">
                 <span className="flex items-center gap-1.5">
-                  <Lock className="w-3.5 h-3.5 text-accent-emerald" />
-                  Firewall Policy Compiler
+                  <FileText className="w-3.5 h-3.5 text-accent-emerald" />
+                  Executive Audit Dossier
                 </span>
                 <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
               </div>
-              <p className="text-slate-400 text-[11px]">Automated iptables, UFW, Cloudflare WAF and AWS NACL synthesis.</p>
+              <p className="text-slate-400 text-[11px]">Print-ready PDF threat intelligence audit dossier &amp; JSON exporter.</p>
             </div>
           </div>
         </section>
@@ -306,6 +316,14 @@ export default function App() {
         isOpen={isLogModalOpen} 
         onClose={() => setIsLogModalOpen(false)} 
         onIngestEvents={handleIngestEvents} 
+      />
+
+      {/* Executive Threat Report Modal */}
+      <ExecutiveReportModal
+        isOpen={isReportModalOpen}
+        onClose={() => setIsReportModalOpen(false)}
+        events={events}
+        metrics={metrics}
       />
 
       {/* Footer */}
