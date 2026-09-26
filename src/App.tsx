@@ -6,8 +6,7 @@ import {
   GitBranch,
   CheckCircle2,
   Bell,
-  Sparkles,
-  Search,
+  UploadCloud,
   Terminal as TerminalIcon
 } from 'lucide-react';
 import { 
@@ -25,11 +24,13 @@ import { AnomalyInspector } from './components/AnomalyInspector';
 import { LiveEventFeed } from './components/LiveEventFeed';
 import { AiCopilotSidebar } from './components/AiCopilotSidebar';
 import { ForensicTable } from './components/ForensicTable';
+import { LogIngestionModal } from './components/LogIngestionModal';
 
 export default function App() {
   const [systemTime, setSystemTime] = useState(new Date().toLocaleTimeString());
   const [events, setEvents] = useState<SecurityEvent[]>(INITIAL_SECURITY_EVENTS);
   const [timeSeries, setTimeSeries] = useState<TimeSeriesDataPoint[]>(INITIAL_TIMESERIES_DATA);
+  const [isLogModalOpen, setIsLogModalOpen] = useState(false);
   const [backendHealth, setBackendHealth] = useState<BackendHealthStatus>({
     connected: false,
     status: 'standby',
@@ -79,6 +80,25 @@ export default function App() {
     });
   };
 
+  // Handler for custom log ingestion batch
+  const handleIngestEvents = (newEvents: SecurityEvent[]) => {
+    setEvents(prev => [...newEvents, ...prev.slice(0, Math.max(10, 30 - newEvents.length))]);
+
+    const maxAnomaly = Math.max(...newEvents.map(e => e.anomalyScore), 1.0);
+    const nowTime = new Date().toTimeString().substring(0, 5);
+    setTimeSeries(prev => {
+      const updated = [...prev];
+      const lastIndex = updated.length - 1;
+      updated[lastIndex] = {
+        time: nowTime,
+        threatActivity: Math.min(100, updated[lastIndex].threatActivity + newEvents.length * 4),
+        anomalyScore: parseFloat(Math.min(10, maxAnomaly).toFixed(1)),
+        isSpike: maxAnomaly > 7.0
+      };
+      return updated;
+    });
+  };
+
   // Handler for AI Copilot threat mitigation execution
   const handleMitigateThreat = (target: string) => {
     setEvents(prev =>
@@ -117,7 +137,7 @@ export default function App() {
                 NEXUS AI
               </span>
               <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-primary/20 text-indigo-400 border border-primary/30 font-semibold">
-                v0.7.0 Fullstack ML
+                v0.8.0 Ingestion Live
               </span>
             </div>
             <p className="text-xs text-slate-400 font-mono">Threat &amp; Anomaly Intelligence</p>
@@ -164,16 +184,27 @@ export default function App() {
 
       {/* Main Content Area */}
       <main className="flex-1 p-6 md:p-8 max-w-7xl mx-auto w-full space-y-8">
-        {/* Real-time KPI Metric Cards */}
+        {/* Real-time KPI Metric Cards & Ingestion Action Bar */}
         <section>
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
             <div>
               <h2 className="text-lg font-bold text-white tracking-tight">Overview Dashboard</h2>
               <p className="text-xs text-slate-400">Autonomous telemetry feed &amp; threat assessment</p>
             </div>
-            <div className="flex items-center gap-2 text-xs font-mono text-slate-400">
-              <span className="w-2 h-2 rounded-full bg-accent-emerald animate-ping" />
-              <span>Real-Time Stream Active</span>
+
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setIsLogModalOpen(true)}
+                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-surface border border-indigo-500/40 hover:border-indigo-500 text-indigo-300 hover:text-white font-mono text-xs font-semibold transition-all shadow-lg shadow-indigo-500/5 active:scale-95"
+              >
+                <UploadCloud className="w-4 h-4 text-accent-cyan" />
+                <span>Ingest Raw Logs</span>
+              </button>
+
+              <div className="flex items-center gap-2 text-xs font-mono text-slate-400">
+                <span className="w-2 h-2 rounded-full bg-accent-emerald animate-ping" />
+                <span>Real-Time Stream Active</span>
+              </div>
             </div>
           </div>
 
@@ -214,14 +245,14 @@ export default function App() {
             </h2>
             <div className="flex items-center gap-2 text-xs font-mono text-accent-cyan">
               <GitBranch className="w-3.5 h-3.5" />
-              <span>Milestone 7 Completed (Fullstack Live)</span>
+              <span>Milestone 8 Completed (Log Ingestion Live)</span>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
             <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5">
               <div className="flex items-center justify-between text-accent-emerald font-semibold mb-1">
-                <span>Core Telemetry &amp; KPIs</span>
+                <span>Core &amp; Metrics</span>
                 <CheckCircle2 className="w-4 h-4" />
               </div>
               <p className="text-slate-400 text-[11px]">Vite, React 18, TypeScript, Tailwind, and real-time metric cards.</p>
@@ -229,36 +260,40 @@ export default function App() {
 
             <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5">
               <div className="flex items-center justify-between text-accent-emerald font-semibold mb-1">
-                <span>ML Analytics Visuals</span>
+                <span>ML &amp; Copilot</span>
                 <CheckCircle2 className="w-4 h-4" />
               </div>
-              <p className="text-slate-400 text-[11px]">Time-series anomaly dual-axis chart &amp; attack vector distributions.</p>
+              <p className="text-slate-400 text-[11px]">Z-Score outlier inspector and autonomous AI MITRE copilot.</p>
             </div>
 
             <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5">
               <div className="flex items-center justify-between text-accent-emerald font-semibold mb-1">
-                <span className="flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-                  AI SecOps Copilot
-                </span>
+                <span>Fullstack Python API</span>
                 <CheckCircle2 className="w-4 h-4" />
               </div>
-              <p className="text-slate-400 text-[11px]">Autonomous incident assistant with MITRE ATT&amp;CK mitigation triggers.</p>
+              <p className="text-slate-400 text-[11px]">Python 3.10 FastAPI backend with Scikit-Learn outlier inference.</p>
             </div>
 
-            <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5">
-              <div className="flex items-center justify-between text-accent-emerald font-semibold mb-1">
+            <div className="p-4 rounded-xl border border-indigo-500/40 bg-indigo-500/10 shadow-lg shadow-indigo-500/5">
+              <div className="flex items-center justify-between text-indigo-400 font-semibold mb-1">
                 <span className="flex items-center gap-1.5">
-                  <Search className="w-3.5 h-3.5 text-accent-cyan" />
-                  Forensic Table &amp; CSV
+                  <UploadCloud className="w-3.5 h-3.5 text-accent-cyan" />
+                  Log Ingestion Engine
                 </span>
-                <CheckCircle2 className="w-4 h-4" />
+                <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
               </div>
-              <p className="text-slate-400 text-[11px]">Multi-filter forensic table, raw packet payload dump &amp; CSV exporter.</p>
+              <p className="text-slate-400 text-[11px]">Raw Nginx, Apache &amp; SSH Auth log parser with preset attack waves.</p>
             </div>
           </div>
         </section>
       </main>
+
+      {/* Log Ingestion Modal */}
+      <LogIngestionModal 
+        isOpen={isLogModalOpen} 
+        onClose={() => setIsLogModalOpen(false)} 
+        onIngestEvents={handleIngestEvents} 
+      />
 
       {/* Footer */}
       <footer className="border-t border-surface-border py-4 px-6 text-center text-xs text-slate-500 font-mono">
