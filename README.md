@@ -6,6 +6,8 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![Docker](https://img.shields.io/badge/Docker-Orchestrated-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+[![CI/CD Pipeline](https://img.shields.io/badge/CI%2FCD-GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/features/actions)
+[![Vercel](https://img.shields.io/badge/Vercel-Deploy_Ready-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
 **NexusAI** is an enterprise-grade SecOps intelligence platform engineered to bridge the gap between **Cybersecurity Telemetry**, **Data Science / Analytics**, and **Machine Learning Outlier Detection**. It processes security event streams, visualizes attack vectors across global geospatials, flags anomalies via statistical Z-score algorithms, and provides actionable incident containment via an integrated AI SecOps Copilot.
@@ -39,6 +41,8 @@
 - [x] **Milestone 10**: Automated firewall policy compiler for `iptables`, `UFW`, `Cloudflare WAF`, and `AWS NACL`.
 - [x] **Milestone 11**: Executive threat intelligence audit dossier generator with print-ready PDF styling.
 - [x] **Milestone 12**: Multi-service Docker containerization (`Dockerfile`, `nginx.conf`, `docker-compose.yml`).
+- [x] **Milestone 13**: SecOps Chaos Lab simulation range and localStorage state persistence.
+- [x] **Milestone 14**: Cloud deployment configs (Vercel, Netlify) & GitHub Actions automated CI/CD pipeline.
 
 ---
 
