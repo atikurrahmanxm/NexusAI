@@ -18,7 +18,7 @@ export const INITIAL_COPILOT_MESSAGES: CopilotMessage[] = [
     id: 'msg-1',
     sender: 'ai',
     timestamp: '23:55:00',
-    text: 'Hello Commander Atik. Telemetry daemon is active. High-frequency anomaly detected on node "alpha-gamma-01" with Volumetric SYN flood signatures.',
+    text: 'Hello Commander Atikur. Telemetry daemon is active. High-frequency anomaly detected on node "alpha-gamma-01" with Volumetric SYN flood signatures.',
     mitreTechnique: 'MITRE ATT&CK: T1499.002 (Network DoS)',
     suggestedAction: {
       label: 'Isolate alpha-gamma-01 Node',

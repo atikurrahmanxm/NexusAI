@@ -230,7 +230,7 @@ export default function App() {
               AR
             </div>
             <div className="hidden xl:block text-left">
-              <p className="text-xs font-semibold text-slate-200">Atik Rahman</p>
+              <p className="text-xs font-semibold text-slate-200">Atikur Rahman</p>
               <p className="text-[10px] text-accent-emerald">SecOps Commander</p>
             </div>
           </div>
@@ -394,7 +394,7 @@ export default function App() {
 
       {/* Footer */}
       <footer className="border-t border-surface-border py-4 px-6 text-center text-xs text-slate-500 font-mono">
-        NexusAI &bull; Autonomous Cybersecurity &amp; ML Threat Intelligence Platform &bull; Built by Atik Rahman
+        NexusAI &bull; Autonomous Cybersecurity &amp; ML Threat Intelligence Platform &bull; Built by Atikur Rahman
       </footer>
     </div>
   );

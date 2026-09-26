@@ -76,4 +76,4 @@ python main.py
 ---
 
 ## 📜 License
-Distributed under the MIT License. Built with ❤️ by Atik Rahman.
+Distributed under the MIT License. Built with ❤️ by Atikur Rahman.

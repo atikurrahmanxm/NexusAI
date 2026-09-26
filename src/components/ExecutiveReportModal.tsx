@@ -34,7 +34,7 @@ export const ExecutiveReportModal: React.FC<ExecutiveReportModalProps> = ({
     const reportData = {
       title: 'NexusAI Executive Threat Intelligence Audit',
       generatedAt: new Date().toISOString(),
-      leadAnalyst: 'Atik Rahman',
+      leadAnalyst: 'Atikur Rahman',
       postureGrade: metrics.threatScore > 70 ? 'ELEVATED_RISK' : 'OPTIMAL_DEFENSE',
       metrics,
       criticalEvents: events.filter(e => e.severity === 'critical' || e.severity === 'high'),
@@ -219,7 +219,7 @@ export const ExecutiveReportModal: React.FC<ExecutiveReportModalProps> = ({
             <div className="text-right p-3 rounded-lg border border-surface-border bg-surface/40 print:border-slate-300 print:bg-slate-50 space-y-1">
               <div className="flex items-center gap-1.5 justify-end">
                 <UserCheck className="w-3.5 h-3.5 text-indigo-400 print:text-indigo-700" />
-                <span className="font-bold text-white print:text-black">Atik Rahman</span>
+                <span className="font-bold text-white print:text-black">Atikur Rahman</span>
               </div>
               <p className="text-[10px] text-slate-400 print:text-slate-600">Lead SecOps &amp; ML Systems Architect</p>
               <p className="text-[10px] text-slate-500">Electronic Verification Signed</p>
