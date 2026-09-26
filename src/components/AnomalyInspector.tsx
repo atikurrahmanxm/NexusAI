@@ -16,36 +16,36 @@ export const AnomalyInspector: React.FC<AnomalyInspectorProps> = ({ events }) =>
   const selectedReport = reports.find(r => r.eventId === selectedReportId) || anomaliesOnly[0] || reports[0];
 
   return (
-    <div className="rounded-xl border border-surface-border bg-surface-card overflow-hidden">
+    <div className="rounded-2xl border border-surface-border bg-gradient-to-b from-surface-card to-surface/90 overflow-hidden shadow-card-subtle">
       {/* Header */}
-      <div className="p-5 border-b border-surface-border bg-surface/40 flex flex-wrap items-center justify-between gap-4">
+      <div className="p-5 md:p-6 border-b border-surface-border bg-surface/50 flex flex-wrap items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-400">
+            <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
               <Cpu className="w-4 h-4" />
             </div>
-            <h3 className="font-semibold text-sm text-white tracking-wide uppercase font-mono">
+            <h3 className="font-bold text-sm text-white tracking-wide uppercase">
               Machine Learning Outlier &amp; Anomaly Engine
             </h3>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
-            Real-time parametric Z-Score detection algorithm: <span className="font-mono text-indigo-300">Z = (X - &mu;) / &sigma;</span>
+          <p className="text-xs text-slate-400 mt-1 font-medium">
+            Real-time parametric Z-Score detection algorithm: <span className="font-mono text-indigo-300 font-semibold">Z = (X - &mu;) / &sigma;</span>
           </p>
         </div>
 
         {/* Statistical Baseline Chips */}
-        <div className="flex items-center gap-3 font-mono text-xs">
-          <div className="px-3 py-1.5 rounded-lg bg-surface border border-surface-border">
-            <span className="text-slate-500">Mean (&mu;): </span>
-            <span className="text-accent-cyan font-bold">{baseline.mean}</span>
+        <div className="flex items-center gap-2.5 text-xs font-medium">
+          <div className="px-3 py-1.5 rounded-xl bg-surface border border-surface-border">
+            <span className="text-slate-400">Mean (&mu;): </span>
+            <span className="text-accent-cyan font-bold font-mono">{baseline.mean}</span>
           </div>
-          <div className="px-3 py-1.5 rounded-lg bg-surface border border-surface-border">
-            <span className="text-slate-500">StdDev (&sigma;): </span>
-            <span className="text-accent-purple font-bold">{baseline.stdDev}</span>
+          <div className="px-3 py-1.5 rounded-xl bg-surface border border-surface-border">
+            <span className="text-slate-400">StdDev (&sigma;): </span>
+            <span className="text-accent-purple font-bold font-mono">{baseline.stdDev}</span>
           </div>
-          <div className="px-3 py-1.5 rounded-lg bg-surface border border-surface-border">
-            <span className="text-slate-500">Outliers: </span>
-            <span className="text-accent-rose font-bold">{anomaliesOnly.length} / {events.length}</span>
+          <div className="px-3 py-1.5 rounded-xl bg-surface border border-surface-border">
+            <span className="text-slate-400">Outliers: </span>
+            <span className="text-accent-rose font-bold font-mono">{anomaliesOnly.length} / {events.length}</span>
           </div>
         </div>
       </div>
@@ -139,50 +139,54 @@ export const AnomalyInspector: React.FC<AnomalyInspectorProps> = ({ events }) =>
 
         {/* Diagnostic Inspector Sidebar (1 Col) */}
         {selectedReport ? (
-          <div className="p-5 bg-surface/30 space-y-4 text-xs font-mono">
+          <div className="p-5 bg-surface/30 space-y-4 text-xs font-sans">
             <div className="flex items-center justify-between pb-3 border-b border-surface-border/60">
-              <span className="text-slate-400">ML INSPECTION</span>
-              <span className="px-2 py-0.5 rounded bg-surface border border-surface-border text-indigo-400 font-bold">
+              <span className="text-slate-400 font-bold uppercase tracking-wider text-[11px]">ML Inspection</span>
+              <span className="px-2.5 py-0.5 rounded-lg bg-surface border border-surface-border text-indigo-400 font-bold font-mono">
                 {selectedReport.eventId}
               </span>
             </div>
 
-            <div className="space-y-2 text-[11px]">
-              <div className="flex justify-between">
+            <div className="space-y-2.5 text-xs">
+              <div className="flex justify-between items-center">
                 <span className="text-slate-400">Calculated Z-Score:</span>
-                <span className={`font-bold ${selectedReport.isAnomaly ? 'text-accent-rose' : 'text-accent-emerald'}`}>
+                <span className={`font-bold font-mono ${selectedReport.isAnomaly ? 'text-accent-rose' : 'text-accent-emerald'}`}>
                   {selectedReport.zScore > 0 ? `+${selectedReport.zScore}` : selectedReport.zScore}&sigma;
                 </span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between items-center">
                 <span className="text-slate-400">Baseline Mean (&mu;):</span>
-                <span className="text-slate-200">{selectedReport.mean}</span>
+                <span className="text-slate-200 font-mono font-medium">{selectedReport.mean}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between items-center">
                 <span className="text-slate-400">Std Deviation (&sigma;):</span>
-                <span className="text-slate-200">{selectedReport.standardDeviation}</span>
+                <span className="text-slate-200 font-mono font-medium">{selectedReport.standardDeviation}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between items-center">
                 <span className="text-slate-400">Confidence:</span>
-                <span className="text-accent-cyan font-bold">{selectedReport.confidencePercentage}%</span>
+                <span className="text-accent-cyan font-bold font-mono">{selectedReport.confidencePercentage}%</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between items-center">
                 <span className="text-slate-400">Classification:</span>
-                <span className={`font-bold ${selectedReport.isAnomaly ? 'text-accent-rose' : 'text-accent-emerald'}`}>
+                <span className={`font-bold px-2 py-0.5 rounded text-[10px] tracking-wide ${
+                  selectedReport.isAnomaly 
+                    ? 'bg-rose-500/15 text-accent-rose border border-rose-500/20' 
+                    : 'bg-emerald-500/15 text-accent-emerald border border-emerald-500/20'
+                }`}>
                   {selectedReport.isAnomaly ? 'ANOMALOUS OUTLIER' : 'NORMAL TRAFFIC'}
                 </span>
               </div>
             </div>
 
             <div className="pt-3 border-t border-surface-border/60">
-              <p className="text-[10px] text-slate-400 uppercase tracking-wider mb-1">Recommended Response</p>
-              <div className="p-2.5 rounded-lg bg-surface border border-surface-border text-slate-200 text-[11px] leading-relaxed">
+              <p className="text-[11px] text-slate-400 uppercase tracking-wider mb-1.5 font-semibold">Recommended Response</p>
+              <div className="p-3 rounded-xl bg-surface border border-surface-border text-slate-200 text-xs leading-relaxed">
                 {selectedReport.recommendedAction}
               </div>
             </div>
 
-            <div className="flex items-center gap-1.5 text-[10px] text-accent-emerald">
-              <CheckCircle2 className="w-3 h-3" />
+            <div className="flex items-center gap-1.5 text-xs text-accent-emerald font-medium">
+              <CheckCircle2 className="w-3.5 h-3.5" />
               <span>Model verification certified against threshold</span>
             </div>
           </div>

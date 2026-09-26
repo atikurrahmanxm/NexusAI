@@ -21,30 +21,30 @@ export const GlobalThreatMap: React.FC<GlobalThreatMapProps> = ({ events }) => {
   const targetClusters = Object.values(PROTECTED_CLUSTERS);
 
   return (
-    <div className="rounded-xl border border-surface-border bg-surface-card overflow-hidden">
+    <div className="rounded-2xl border border-surface-border bg-gradient-to-b from-surface-card to-surface/90 overflow-hidden shadow-card-subtle font-sans">
       {/* Header */}
-      <div className="p-5 border-b border-surface-border bg-surface/50 flex flex-wrap items-center justify-between gap-4">
+      <div className="p-5 md:p-6 border-b border-surface-border bg-surface/50 flex flex-wrap items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-400">
+            <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
               <Globe className="w-4 h-4" />
             </div>
-            <h3 className="font-semibold text-sm text-white tracking-wide uppercase font-mono">
+            <h3 className="font-bold text-sm text-white tracking-wide uppercase">
               Global Cyber Threat Radar &amp; Attack Map
             </h3>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-400 mt-1 font-medium">
             Real-time geospatial trajectory projection of inbound attack vectors
           </p>
         </div>
 
         {/* Live Radar Toggle */}
-        <div className="flex items-center gap-3 font-mono text-xs">
+        <div className="flex items-center gap-3 text-xs font-semibold">
           <button
             onClick={() => setIsAnimationActive(!isAnimationActive)}
-            className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-all ${
+            className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border transition-all shadow-sm ${
               isAnimationActive 
-                ? 'bg-emerald-500/10 text-accent-emerald border-emerald-500/30' 
+                ? 'bg-emerald-500/10 text-accent-emerald border-emerald-500/30 shadow-glow-emerald' 
                 : 'bg-surface text-slate-400 border-surface-border'
             }`}
           >
@@ -52,9 +52,9 @@ export const GlobalThreatMap: React.FC<GlobalThreatMapProps> = ({ events }) => {
             <span>{isAnimationActive ? 'RADAR: LIVE SWEEP' : 'RADAR: PAUSED'}</span>
           </button>
 
-          <div className="px-3 py-1.5 rounded-lg bg-surface border border-surface-border text-slate-300">
-            <span className="text-slate-500">Active Vectors: </span>
-            <span className="text-accent-rose font-bold">{vectors.length}</span>
+          <div className="px-3.5 py-2 rounded-xl bg-surface border border-surface-border text-slate-300">
+            <span className="text-slate-400">Active Vectors: </span>
+            <span className="text-accent-rose font-bold font-mono ml-1">{vectors.length}</span>
           </div>
         </div>
       </div>
@@ -179,60 +179,60 @@ export const GlobalThreatMap: React.FC<GlobalThreatMapProps> = ({ events }) => {
 
           {/* Selected Vector Details Bar */}
           {selectedVector ? (
-            <div className="mt-3 p-3 rounded-lg bg-surface border border-rose-500/30 flex items-center justify-between text-xs font-mono">
-              <div className="flex items-center gap-2">
+            <div className="mt-3 p-3.5 rounded-xl bg-surface/90 border border-rose-500/40 flex items-center justify-between text-xs font-sans shadow-glow-rose">
+              <div className="flex items-center gap-2.5">
                 <Crosshair className="w-4 h-4 text-accent-rose animate-spin" />
-                <span>
-                  <strong>Target Lock:</strong> {selectedVector.sourceIp} ({selectedVector.sourceLocation.country}) &rarr; {selectedVector.targetLocation.name}
+                <span className="text-slate-200">
+                  <strong className="text-white">Target Lock:</strong> <span className="font-mono text-rose-300">{selectedVector.sourceIp}</span> ({selectedVector.sourceLocation.country}) &rarr; <span className="text-indigo-300 font-semibold">{selectedVector.targetLocation.name}</span>
                 </span>
-                <span className="px-2 py-0.5 rounded bg-rose-500/10 text-accent-rose font-bold text-[10px] uppercase">
+                <span className="px-2.5 py-0.5 rounded-full bg-rose-500/15 text-accent-rose font-bold text-[10px] uppercase tracking-wide border border-rose-500/30">
                   {selectedVector.attackType} ({selectedVector.severity})
                 </span>
               </div>
               <button 
                 onClick={() => setSelectedVector(null)}
-                className="text-slate-400 hover:text-white text-[11px]"
+                className="text-slate-400 hover:text-white text-xs font-semibold px-2 py-1 rounded-lg hover:bg-surface transition-colors"
               >
                 Close
               </button>
             </div>
           ) : (
-            <div className="mt-3 text-[11px] font-mono text-slate-500 flex items-center justify-between">
+            <div className="mt-3 text-xs font-medium text-slate-400 flex items-center justify-between">
               <span>Hover or click on any attack trajectory to inspect remote origin telemetry.</span>
-              <span className="text-accent-emerald">&bull; Global Edge Defense Synced</span>
+              <span className="text-accent-emerald font-semibold">&bull; Global Edge Defense Synced</span>
             </div>
           )}
         </div>
 
         {/* Top Attacking Nations Leaderboard (1 Col on lg) */}
-        <div className="p-5 bg-surface/30 flex flex-col justify-between font-mono text-xs space-y-4">
+        <div className="p-5 bg-surface/30 flex flex-col justify-between font-sans text-xs space-y-4">
           <div>
             <div className="flex items-center justify-between pb-3 border-b border-surface-border">
               <span className="text-slate-400 font-bold text-[11px] uppercase tracking-wider">Top Attack Origins</span>
-              <span className="text-slate-500 text-[10px]">By Volume</span>
+              <span className="text-slate-500 text-xs font-medium">By Volume</span>
             </div>
 
             <div className="divide-y divide-surface-border/40 mt-1">
               {countryMetrics.map((item, idx) => (
                 <div key={idx} className="py-2.5 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="w-4 text-slate-500 font-bold text-[11px]">{idx + 1}.</span>
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-4 text-slate-500 font-bold text-xs">{idx + 1}.</span>
                     <div>
-                      <p className="text-slate-200 font-bold text-xs">{item.country}</p>
-                      <p className="text-[10px] text-slate-500">Vector: {item.topVector}</p>
+                      <p className="text-slate-100 font-bold text-xs">{item.country}</p>
+                      <p className="text-[11px] text-slate-400">Vector: <span className="font-medium text-slate-300">{item.topVector}</span></p>
                     </div>
                   </div>
 
                   <div className="text-right">
-                    <span className="text-accent-rose font-bold">{item.count} attacks</span>
-                    <p className="text-[10px] text-slate-400">{item.percentage}% of fleet</p>
+                    <span className="text-accent-rose font-bold font-mono">{item.count} attacks</span>
+                    <p className="text-[11px] text-slate-400">{item.percentage}% fleet load</p>
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="p-3 rounded-lg bg-surface border border-surface-border text-[11px] text-slate-400 leading-relaxed">
+          <div className="p-3.5 rounded-xl bg-surface border border-surface-border text-xs text-slate-400 leading-relaxed shadow-sm">
             <span className="text-indigo-300 font-bold block mb-1">Geofencing Advisory</span>
             Automated BGP rate-limiting recommended on highest attack origin subnets.
           </div>

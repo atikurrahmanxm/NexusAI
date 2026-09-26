@@ -65,17 +65,19 @@ export const ForensicTable: React.FC<ForensicTableProps> = ({ events, onUpdateEv
   };
 
   return (
-    <div className="rounded-xl border border-surface-border bg-surface-card overflow-hidden">
+    <div className="rounded-2xl border border-surface-border bg-gradient-to-b from-surface-card to-surface/90 overflow-hidden shadow-card-subtle font-sans">
       {/* Header and Controls */}
-      <div className="p-5 border-b border-surface-border bg-surface/40 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-5 md:p-6 border-b border-surface-border bg-surface/50 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <Hash className="w-4 h-4 text-indigo-400" />
-            <h3 className="font-semibold text-sm text-white tracking-wide uppercase font-mono">
+            <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+              <Hash className="w-4 h-4" />
+            </div>
+            <h3 className="font-bold text-sm text-white tracking-wide uppercase">
               Dataset Insights &amp; Forensic Investigation Table
             </h3>
           </div>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-400 mt-1 font-medium">
             Query, filter, and audit deep packet inspection logs across distributed nodes
           </p>
         </div>
@@ -83,7 +85,7 @@ export const ForensicTable: React.FC<ForensicTableProps> = ({ events, onUpdateEv
         {/* Action button */}
         <button
           onClick={handleExportCsv}
-          className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-mono font-medium rounded-lg bg-surface border border-surface-border hover:border-primary/50 text-slate-200 transition-all self-start md:self-auto"
+          className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-semibold rounded-xl bg-surface border border-surface-border hover:border-primary/50 text-slate-200 transition-all self-start md:self-auto shadow-sm"
         >
           <Download className="w-3.5 h-3.5 text-accent-cyan" />
           <span>Export Audit (CSV)</span>
@@ -100,18 +102,18 @@ export const ForensicTable: React.FC<ForensicTableProps> = ({ events, onUpdateEv
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by IP, Incident ID, node, or payload..."
-            className="w-full pl-9 pr-3 py-1.5 bg-surface-card border border-surface-border rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-primary font-mono"
+            className="w-full pl-9 pr-3 py-2 bg-surface-card border border-surface-border rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-primary font-sans transition-colors"
           />
         </div>
 
         {/* Filter Dropdowns */}
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5 font-mono">
+          <div className="flex items-center gap-1.5 font-medium">
             <Filter className="w-3.5 h-3.5 text-slate-400" />
             <select
               value={selectedSeverity}
               onChange={(e) => setSelectedSeverity(e.target.value)}
-              className="bg-surface-card border border-surface-border text-slate-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-primary text-xs"
+              className="bg-surface-card border border-surface-border text-slate-300 rounded-xl px-3 py-1.5 focus:outline-none focus:border-primary text-xs"
             >
               <option value="all">Severity: All</option>
               <option value="critical">Critical</option>
@@ -121,11 +123,11 @@ export const ForensicTable: React.FC<ForensicTableProps> = ({ events, onUpdateEv
             </select>
           </div>
 
-          <div className="flex items-center gap-1.5 font-mono">
+          <div className="flex items-center gap-1.5 font-medium">
             <select
               value={selectedAttackType}
               onChange={(e) => setSelectedAttackType(e.target.value)}
-              className="bg-surface-card border border-surface-border text-slate-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-primary text-xs"
+              className="bg-surface-card border border-surface-border text-slate-300 rounded-xl px-3 py-1.5 focus:outline-none focus:border-primary text-xs"
             >
               <option value="all">Vector: All</option>
               <option value="DDoS">DDoS</option>
@@ -137,25 +139,25 @@ export const ForensicTable: React.FC<ForensicTableProps> = ({ events, onUpdateEv
             </select>
           </div>
 
-          <span className="text-[11px] font-mono text-slate-400">
-            Showing {filteredEvents.length} of {events.length}
+          <span className="text-xs font-medium text-slate-400">
+            Showing <strong className="text-white font-mono">{filteredEvents.length}</strong> of <strong className="text-white font-mono">{events.length}</strong>
           </span>
         </div>
       </div>
 
       {/* Table */}
       <div className="overflow-x-auto">
-        <table className="w-full text-left text-xs font-mono">
-          <thead className="bg-surface/80 text-slate-400 border-b border-surface-border text-[11px] uppercase tracking-wider">
+        <table className="w-full text-left text-xs font-sans">
+          <thead className="bg-surface/80 text-slate-400 border-b border-surface-border text-[11px] uppercase tracking-wider font-semibold">
             <tr>
-              <th className="px-5 py-3 font-semibold">Incident ID</th>
-              <th className="px-5 py-3 font-semibold">Source IP</th>
-              <th className="px-5 py-3 font-semibold">Target Node</th>
-              <th className="px-5 py-3 font-semibold">Attack Vector</th>
-              <th className="px-5 py-3 font-semibold">Severity</th>
-              <th className="px-5 py-3 font-semibold">Anomaly Score</th>
-              <th className="px-5 py-3 font-semibold">Status</th>
-              <th className="px-5 py-3 font-semibold text-right">Action</th>
+              <th className="px-5 py-3.5">Incident ID</th>
+              <th className="px-5 py-3.5">Source IP</th>
+              <th className="px-5 py-3.5">Target Node</th>
+              <th className="px-5 py-3.5">Attack Vector</th>
+              <th className="px-5 py-3.5">Severity</th>
+              <th className="px-5 py-3.5">Anomaly Score</th>
+              <th className="px-5 py-3.5">Status</th>
+              <th className="px-5 py-3.5 text-right">Action</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-surface-border/50 text-slate-300">
@@ -247,16 +249,16 @@ export const ForensicTable: React.FC<ForensicTableProps> = ({ events, onUpdateEv
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-surface-card border border-surface-border rounded-2xl max-w-xl w-full overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
             {/* Modal Header */}
-            <div className="p-5 border-b border-surface-border flex items-center justify-between bg-surface/50">
+            <div className="p-5 border-b border-surface-border flex items-center justify-between bg-surface/50 font-sans">
               <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400">
+                <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
                   <Globe className="w-4 h-4" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-sm text-white font-mono">
-                    Forensic Dossier: {selectedEvent.id}
+                  <h4 className="font-bold text-sm text-white">
+                    Forensic Dossier: <span className="font-mono text-indigo-300">{selectedEvent.id}</span>
                   </h4>
-                  <p className="text-[11px] text-slate-400 font-mono">Ingested at {selectedEvent.timestamp} UTC</p>
+                  <p className="text-[11px] text-slate-400 font-medium">Ingested at <span className="font-mono">{selectedEvent.timestamp}</span> UTC</p>
                 </div>
               </div>
               <button
@@ -268,7 +270,7 @@ export const ForensicTable: React.FC<ForensicTableProps> = ({ events, onUpdateEv
             </div>
 
             {/* Modal Body */}
-            <div className="p-6 space-y-4 text-xs font-mono">
+            <div className="p-6 space-y-4 text-xs font-sans">
               <div className="grid grid-cols-2 gap-3 p-3.5 rounded-xl bg-surface border border-surface-border">
                 <div>
                   <span className="text-[10px] text-slate-500 uppercase">Remote Origin</span>

@@ -181,57 +181,57 @@ export default function App() {
   return (
     <div className="min-h-screen bg-background text-slate-100 flex flex-col font-sans">
       {/* Top Navigation Bar */}
-      <header className="h-16 border-b border-surface-border bg-surface/80 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-50">
+      <header className="h-16 border-b border-surface-border bg-surface/90 backdrop-blur-xl px-6 flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-accent-cyan flex items-center justify-center shadow-lg shadow-primary/30">
-            <Shield className="w-6 h-6 text-white" />
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-accent-cyan flex items-center justify-center shadow-glow-primary">
+            <Shield className="w-5 h-5 text-white" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-white via-slate-200 to-indigo-300 bg-clip-text text-transparent">
+            <div className="flex items-center gap-2.5">
+              <span className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-indigo-300 bg-clip-text text-transparent">
                 NEXUS AI
               </span>
-              <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-primary/20 text-indigo-400 border border-primary/30 font-semibold">
-                v1.2.0 Chaos Range
+              <span className="text-[11px] font-bold uppercase px-2.5 py-0.5 rounded-full bg-primary/15 text-primary-light border border-primary/30 tracking-wider">
+                v1.2.0 Active
               </span>
             </div>
-            <p className="text-xs text-slate-400 font-mono">Threat &amp; Anomaly Intelligence</p>
+            <p className="text-xs text-slate-400 font-medium tracking-tight">Threat &amp; Anomaly Intelligence Platform</p>
           </div>
         </div>
 
         {/* Live System Indicators */}
         <div className="flex items-center gap-4 sm:gap-6">
           {/* Backend Status Badge */}
-          <div className="hidden md:flex items-center gap-2 text-xs font-mono px-3 py-1.5 rounded-lg bg-surface-card border border-surface-border">
+          <div className="hidden md:flex items-center gap-2 text-xs px-3 py-1.5 rounded-xl bg-surface-card border border-surface-border font-medium">
             <TerminalIcon className={`w-3.5 h-3.5 ${backendHealth.connected ? 'text-accent-emerald' : 'text-accent-cyan'}`} />
-            <span className="text-slate-400">ENGINE:</span>
+            <span className="text-slate-400">Engine:</span>
             <span className={`font-semibold ${backendHealth.connected ? 'text-accent-emerald' : 'text-accent-cyan'}`}>
-              {backendHealth.connected ? 'Python FastAPI (Active)' : 'Hybrid ML Ready'}
+              {backendHealth.connected ? 'Python FastAPI' : 'Hybrid ML Ready'}
             </span>
           </div>
 
-          <div className="hidden sm:flex items-center gap-2 text-xs font-mono px-3 py-1.5 rounded-lg bg-surface-card border border-surface-border">
+          <div className="hidden sm:flex items-center gap-2 text-xs px-3 py-1.5 rounded-xl bg-surface-card border border-surface-border font-medium">
             <Radio className="w-3.5 h-3.5 text-accent-emerald animate-pulse" />
-            <span className="text-slate-400">TELEMETRY:</span>
-            <span className="text-accent-emerald font-semibold">ONLINE</span>
+            <span className="text-slate-400">Telemetry:</span>
+            <span className="text-accent-emerald font-semibold">Online</span>
           </div>
 
-          <div className="hidden lg:flex items-center gap-2 text-xs font-mono px-3 py-1.5 rounded-lg bg-surface-card border border-surface-border">
-            <span className="text-slate-400">SYS_TIME:</span>
-            <span className="text-accent-cyan">{systemTime}</span>
+          <div className="hidden lg:flex items-center gap-2 text-xs px-3 py-1.5 rounded-xl bg-surface-card border border-surface-border font-medium">
+            <span className="text-slate-400">Time:</span>
+            <span className="text-accent-cyan font-semibold font-mono">{systemTime}</span>
           </div>
 
           <div className="flex items-center gap-3 pl-4 border-l border-surface-border">
-            <button className="relative p-2 rounded-lg bg-surface-card border border-surface-border hover:border-slate-500 text-slate-300">
+            <button className="relative p-2 rounded-xl bg-surface-card border border-surface-border hover:border-slate-500 text-slate-300 transition-colors">
               <Bell className="w-4 h-4" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-accent-rose" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-accent-rose animate-ping" />
             </button>
             <div className="w-8 h-8 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center text-xs font-bold text-white shadow-md">
               AR
             </div>
             <div className="hidden xl:block text-left">
-              <p className="text-xs font-semibold text-slate-200">Atikur Rahman</p>
-              <p className="text-[10px] text-accent-emerald">SecOps Commander</p>
+              <p className="text-xs font-bold text-slate-200">Atikur Rahman</p>
+              <p className="text-[10px] text-accent-emerald font-semibold">SecOps Commander</p>
             </div>
           </div>
         </div>
@@ -241,16 +241,16 @@ export default function App() {
       <main className="flex-1 p-6 md:p-8 max-w-7xl mx-auto w-full space-y-8">
         {/* Real-time KPI Metric Cards & Ingestion Action Bar */}
         <section>
-          <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+          <div className="flex flex-wrap items-center justify-between gap-4 mb-5">
             <div>
-              <h2 className="text-lg font-bold text-white tracking-tight">Overview Dashboard</h2>
-              <p className="text-xs text-slate-400">Autonomous telemetry feed &amp; threat assessment</p>
+              <h2 className="text-xl font-extrabold text-white tracking-tight">Overview Dashboard</h2>
+              <p className="text-xs text-slate-400 font-medium">Autonomous threat assessment, real-time ML anomaly detection &amp; telemetry</p>
             </div>
 
             <div className="flex items-center gap-2.5">
               <button
                 onClick={() => setIsSimLabOpen(true)}
-                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-rose-600/30 to-rose-600/10 border border-rose-500/40 hover:border-rose-500 text-rose-300 hover:text-white font-mono text-xs font-semibold transition-all shadow-lg shadow-rose-500/5 active:scale-95"
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-rose-600/25 via-rose-600/15 to-transparent border border-rose-500/40 hover:border-rose-500 text-rose-300 hover:text-white text-xs font-bold transition-all shadow-glow-rose active:scale-95"
               >
                 <Flame className="w-4 h-4 text-accent-rose" />
                 <span>Chaos Lab</span>
@@ -258,7 +258,7 @@ export default function App() {
 
               <button
                 onClick={() => setIsReportModalOpen(true)}
-                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-surface border border-accent-emerald/40 hover:border-accent-emerald text-accent-emerald hover:text-white font-mono text-xs font-semibold transition-all shadow-lg shadow-emerald-500/5 active:scale-95"
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-surface-card border border-accent-emerald/40 hover:border-accent-emerald text-accent-emerald hover:text-white text-xs font-bold transition-all shadow-glow-emerald active:scale-95"
               >
                 <FileText className="w-4 h-4" />
                 <span>Executive Audit (PDF)</span>
@@ -266,13 +266,13 @@ export default function App() {
 
               <button
                 onClick={() => setIsLogModalOpen(true)}
-                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-surface border border-indigo-500/40 hover:border-indigo-500 text-indigo-300 hover:text-white font-mono text-xs font-semibold transition-all shadow-lg shadow-indigo-500/5 active:scale-95"
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-surface-card border border-indigo-500/40 hover:border-indigo-500 text-indigo-300 hover:text-white text-xs font-bold transition-all shadow-glow-primary active:scale-95"
               >
                 <UploadCloud className="w-4 h-4 text-accent-cyan" />
                 <span>Ingest Raw Logs</span>
               </button>
 
-              <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-slate-400 pl-2">
+              <div className="hidden sm:flex items-center gap-2 text-xs font-medium text-slate-400 pl-2">
                 <span className="w-2 h-2 rounded-full bg-accent-emerald animate-ping" />
                 <span>Live Stream</span>
               </div>
@@ -324,7 +324,7 @@ export default function App() {
               <Layers className="w-4 h-4 text-indigo-400" />
               Roadmap Status &amp; Execution Pipeline
             </h2>
-            <div className="flex items-center gap-2 text-xs font-mono text-accent-cyan">
+            <div className="flex items-center gap-2 text-xs font-medium text-accent-cyan">
               <GitBranch className="w-3.5 h-3.5" />
               <span>Milestone 14 Completed (Cloud CI/CD &amp; Vercel Live)</span>
             </div>
@@ -393,7 +393,7 @@ export default function App() {
       />
 
       {/* Footer */}
-      <footer className="border-t border-surface-border py-4 px-6 text-center text-xs text-slate-500 font-mono">
+      <footer className="border-t border-surface-border py-4 px-6 text-center text-xs text-slate-400 font-sans">
         NexusAI &bull; Autonomous Cybersecurity &amp; ML Threat Intelligence Platform &bull; Built by Atikur Rahman
       </footer>
     </div>

@@ -63,12 +63,12 @@ export const SimulationLabModal: React.FC<SimulationLabModalProps> = ({
   ];
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-surface-card border border-surface-border rounded-2xl max-w-3xl w-full overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200 flex flex-col my-6 font-mono text-xs">
+    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto font-sans">
+      <div className="bg-surface-card border border-surface-border rounded-2xl max-w-3xl w-full overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200 flex flex-col my-6 text-xs">
         {/* Header */}
-        <div className="p-5 border-b border-surface-border bg-surface/60 flex items-center justify-between">
+        <div className="p-5 md:p-6 border-b border-surface-border bg-surface/60 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-lg bg-rose-500/10 text-accent-rose">
+            <div className="p-2 rounded-xl bg-rose-500/10 text-accent-rose border border-rose-500/20 shadow-glow-rose">
               <Flame className="w-5 h-5" />
             </div>
             <div>
@@ -76,11 +76,11 @@ export const SimulationLabModal: React.FC<SimulationLabModalProps> = ({
                 <h3 className="font-bold text-sm text-white uppercase tracking-wider">
                   SecOps Chaos Lab &amp; Attack Simulator
                 </h3>
-                <span className="px-2 py-0.5 rounded bg-rose-500/10 text-accent-rose border border-rose-500/30 text-[10px] font-bold">
+                <span className="px-2.5 py-0.5 rounded-full bg-rose-500/10 text-accent-rose border border-rose-500/30 text-[10px] font-bold tracking-wide">
                   ACTIVE RANGE
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400 mt-0.5 font-sans">
+              <p className="text-xs text-slate-400 mt-1 font-medium">
                 Simulate targeted adversary campaigns to benchmark real-time ML anomaly detection
               </p>
             </div>
@@ -108,9 +108,9 @@ export const SimulationLabModal: React.FC<SimulationLabModalProps> = ({
                   <button
                     key={vec.type}
                     onClick={() => setSelectedType(vec.type)}
-                    className={`p-3 rounded-xl border text-left transition-all ${
+                    className={`p-3.5 rounded-xl border text-left transition-all ${
                       isSelected
-                        ? 'bg-rose-500/15 border-rose-500 text-white shadow-lg shadow-rose-500/10'
+                        ? 'bg-rose-500/15 border-rose-500 text-white shadow-glow-rose'
                         : 'bg-surface/50 border-surface-border text-slate-300 hover:border-slate-600'
                     }`}
                   >
@@ -118,7 +118,7 @@ export const SimulationLabModal: React.FC<SimulationLabModalProps> = ({
                       <span className="font-bold text-xs">{vec.label}</span>
                       {isSelected && <ShieldAlert className="w-3.5 h-3.5 text-accent-rose" />}
                     </div>
-                    <p className="text-[10px] text-slate-400 font-sans leading-tight">{vec.desc}</p>
+                    <p className="text-[11px] text-slate-400 leading-tight font-normal">{vec.desc}</p>
                   </button>
                 );
               })}

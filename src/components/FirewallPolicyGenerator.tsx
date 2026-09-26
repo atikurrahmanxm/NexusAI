@@ -65,28 +65,28 @@ export const FirewallPolicyGenerator: React.FC<FirewallPolicyGeneratorProps> = (
   ];
 
   return (
-    <div className="rounded-xl border border-surface-border bg-surface-card overflow-hidden">
+    <div className="rounded-2xl border border-surface-border bg-gradient-to-b from-surface-card to-surface/90 overflow-hidden shadow-card-subtle font-sans">
       {/* Header */}
-      <div className="p-5 border-b border-surface-border bg-surface/50 flex flex-wrap items-center justify-between gap-4">
+      <div className="p-5 md:p-6 border-b border-surface-border bg-surface/50 flex flex-wrap items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-lg bg-emerald-500/10 text-accent-emerald">
+            <div className="p-1.5 rounded-lg bg-emerald-500/10 text-accent-emerald border border-emerald-500/20">
               <Lock className="w-4 h-4" />
             </div>
-            <h3 className="font-semibold text-sm text-white tracking-wide uppercase font-mono">
+            <h3 className="font-bold text-sm text-white tracking-wide uppercase">
               Automated Firewall &amp; WAF Security Policy Compiler
             </h3>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-400 mt-1 font-medium">
             Real-time rule synthesis from active threat telemetry for instant edge deployment
           </p>
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-3 font-mono text-xs">
+        <div className="flex items-center gap-3 text-xs font-semibold">
           <button
             onClick={handleCopy}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface border border-surface-border hover:border-primary text-slate-200 hover:text-white transition-all active:scale-95"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-surface border border-surface-border hover:border-primary text-slate-200 hover:text-white transition-all active:scale-95 shadow-sm"
           >
             {copied ? (
               <>
@@ -103,7 +103,7 @@ export const FirewallPolicyGenerator: React.FC<FirewallPolicyGeneratorProps> = (
 
           <button
             onClick={handleDownload}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary hover:bg-primary-hover text-white transition-all shadow-md shadow-primary/20 active:scale-95"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary hover:bg-primary-hover text-white transition-all shadow-glow-primary active:scale-95"
           >
             <Download className="w-3.5 h-3.5 text-accent-cyan" />
             <span>Download Script</span>
@@ -112,7 +112,7 @@ export const FirewallPolicyGenerator: React.FC<FirewallPolicyGeneratorProps> = (
       </div>
 
       {/* Tabs */}
-      <div className="px-5 pt-3 bg-surface/40 border-b border-surface-border flex items-center gap-2 overflow-x-auto text-xs font-mono">
+      <div className="px-5 pt-3 bg-surface/40 border-b border-surface-border flex items-center gap-2 overflow-x-auto text-xs font-medium">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id;
           return (
@@ -135,17 +135,17 @@ export const FirewallPolicyGenerator: React.FC<FirewallPolicyGeneratorProps> = (
       {/* Code Viewer & Policy Stats */}
       <div className="p-5 space-y-4">
         {/* Stats Row */}
-        <div className="flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
+        <div className="flex flex-wrap items-center justify-between gap-3 text-xs font-medium">
           <div className="flex items-center gap-3">
-            <span className="px-2.5 py-1 rounded bg-surface border border-surface-border text-slate-300">
-              Generated Rules: <strong className="text-accent-emerald">{currentPolicy.ruleCount}</strong>
+            <span className="px-3 py-1.5 rounded-xl bg-surface border border-surface-border text-slate-300">
+              Generated Rules: <strong className="text-accent-emerald font-bold font-mono ml-1">{currentPolicy.ruleCount}</strong>
             </span>
-            <span className="px-2.5 py-1 rounded bg-surface border border-surface-border text-slate-300">
-              Quarantined IPs: <strong className="text-accent-rose">{currentPolicy.blockedIps.length}</strong>
+            <span className="px-3 py-1.5 rounded-xl bg-surface border border-surface-border text-slate-300">
+              Quarantined IPs: <strong className="text-accent-rose font-bold font-mono ml-1">{currentPolicy.blockedIps.length}</strong>
             </span>
           </div>
 
-          <div className="text-[11px] text-slate-400">
+          <div className="text-xs text-slate-400">
             Perimeter Defense: <span className="text-accent-emerald font-semibold">Zero-Trust Kernel Drop</span>
           </div>
         </div>

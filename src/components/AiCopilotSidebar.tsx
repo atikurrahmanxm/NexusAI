@@ -67,32 +67,32 @@ export const AiCopilotSidebar: React.FC<AiCopilotSidebarProps> = ({ events, onMi
   ];
 
   return (
-    <div className="rounded-xl border border-surface-border bg-surface-card overflow-hidden flex flex-col h-[520px]">
+    <div className="rounded-2xl border border-surface-border bg-gradient-to-b from-surface-card to-surface/90 overflow-hidden flex flex-col h-[520px] shadow-card-subtle font-sans">
       {/* Header */}
       <div className="p-4 border-b border-surface-border bg-surface/60 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-accent-purple to-primary flex items-center justify-center text-white shadow-md shadow-purple-500/20">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-accent-purple to-primary flex items-center justify-center text-white shadow-glow-primary">
             <Bot className="w-4 h-4" />
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <h3 className="text-xs font-bold text-white tracking-wide uppercase font-mono">
+              <h3 className="text-xs font-bold text-white tracking-wide uppercase">
                 Nexus AI Copilot
               </h3>
               <span className="w-2 h-2 rounded-full bg-accent-emerald animate-pulse" />
             </div>
-            <p className="text-[10px] text-slate-400 font-mono">Autonomous SecOps Incident Assistant</p>
+            <p className="text-[11px] text-slate-400 font-medium">Autonomous SecOps Incident Assistant</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5 text-[10px] font-mono px-2 py-1 rounded bg-surface border border-surface-border text-indigo-300">
-          <Cpu className="w-3 h-3 text-accent-cyan" />
+        <div className="flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-xl bg-surface border border-surface-border text-indigo-300">
+          <Cpu className="w-3.5 h-3.5 text-accent-cyan" />
           <span>LLM SecOps v2.4</span>
         </div>
       </div>
 
       {/* Messages Scroll Area */}
-      <div className="flex-1 p-4 overflow-y-auto space-y-4 text-xs font-mono">
+      <div className="flex-1 p-4 overflow-y-auto space-y-4 text-xs font-sans">
         {messages.map((msg) => {
           const isAi = msg.sender === 'ai';
 
@@ -101,23 +101,23 @@ export const AiCopilotSidebar: React.FC<AiCopilotSidebarProps> = ({ events, onMi
               key={msg.id}
               className={`flex flex-col ${isAi ? 'items-start' : 'items-end'}`}
             >
-              <div className="flex items-center gap-1.5 text-[10px] text-slate-500 mb-1">
+              <div className="flex items-center gap-1.5 text-[10px] font-medium text-slate-500 mb-1">
                 <span>{isAi ? 'COPILOT' : 'ANALYST'}</span>
                 <span>&bull;</span>
-                <span>{msg.timestamp}</span>
+                <span className="font-mono">{msg.timestamp}</span>
               </div>
 
               <div
-                className={`max-w-[90%] rounded-xl p-3.5 space-y-2 leading-relaxed ${
+                className={`max-w-[90%] rounded-2xl p-3.5 space-y-2 leading-relaxed shadow-sm ${
                   isAi
-                    ? 'bg-surface border border-surface-border text-slate-200'
-                    : 'bg-primary text-white ml-auto'
+                    ? 'bg-surface/90 border border-surface-border text-slate-200'
+                    : 'bg-primary text-white ml-auto shadow-primary/20'
                 }`}
               >
-                <p className="text-xs whitespace-pre-line">{msg.text}</p>
+                <p className="text-xs font-normal whitespace-pre-line leading-relaxed">{msg.text}</p>
 
                 {msg.mitreTechnique && (
-                  <div className="pt-2 border-t border-surface-border/50 flex items-center gap-1.5 text-[10px] text-indigo-300 font-bold">
+                  <div className="pt-2 border-t border-surface-border/50 flex items-center gap-1.5 text-[11px] text-indigo-300 font-semibold">
                     <ShieldAlert className="w-3.5 h-3.5 text-accent-amber" />
                     <span>{msg.mitreTechnique}</span>
                   </div>
@@ -147,12 +147,12 @@ export const AiCopilotSidebar: React.FC<AiCopilotSidebarProps> = ({ events, onMi
       </div>
 
       {/* Quick Suggestion Chips */}
-      <div className="px-4 py-2 bg-surface/50 border-t border-surface-border flex items-center gap-2 overflow-x-auto text-[11px]">
+      <div className="px-4 py-2.5 bg-surface/50 border-t border-surface-border flex items-center gap-2 overflow-x-auto text-[11px]">
         {quickPrompts.map((prompt, idx) => (
           <button
             key={idx}
             onClick={() => handleSend(prompt)}
-            className="whitespace-nowrap px-2.5 py-1 rounded-md bg-surface-card border border-surface-border hover:border-primary/50 text-slate-300 hover:text-white transition-all font-mono"
+            className="whitespace-nowrap px-3 py-1.5 rounded-lg bg-surface-card border border-surface-border hover:border-primary/50 text-slate-300 hover:text-white transition-all font-medium text-xs shadow-sm"
           >
             {prompt}
           </button>
@@ -174,13 +174,13 @@ export const AiCopilotSidebar: React.FC<AiCopilotSidebarProps> = ({ events, onMi
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask Copilot: mitigate DDoS, analyze IP, check MITRE tactics..."
-            className="w-full pl-9 pr-3 py-2 bg-surface-card border border-surface-border rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-primary font-mono"
+            className="w-full pl-9 pr-3 py-2 bg-surface-card border border-surface-border rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-primary font-sans transition-colors"
           />
         </div>
 
         <button
           type="submit"
-          className="p-2 rounded-lg bg-primary hover:bg-primary-hover text-white transition-colors"
+          className="p-2.5 rounded-xl bg-primary hover:bg-primary-hover text-white transition-colors shadow-sm shadow-primary/30 active:scale-95"
         >
           <Send className="w-4 h-4" />
         </button>

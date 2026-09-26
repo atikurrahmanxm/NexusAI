@@ -65,18 +65,18 @@ export const LogIngestionModal: React.FC<LogIngestionModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-surface-card border border-surface-border rounded-2xl max-w-2xl w-full overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
+      <div className="bg-surface-card border border-surface-border rounded-2xl max-w-2xl w-full overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200 flex flex-col max-h-[90vh] font-sans">
         {/* Header */}
-        <div className="p-5 border-b border-surface-border bg-surface/50 flex items-center justify-between">
+        <div className="p-5 md:p-6 border-b border-surface-border bg-surface/50 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400">
+            <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
               <UploadCloud className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-bold text-sm text-white font-mono uppercase tracking-wide">
+              <h3 className="font-bold text-sm text-white uppercase tracking-wide">
                 Log Ingestion &amp; Real Dataset Ingestion Engine
               </h3>
-              <p className="text-xs text-slate-400">Upload or paste raw Nginx, SSH Auth, or JSON telemetry logs</p>
+              <p className="text-xs text-slate-400 font-medium mt-0.5">Upload or paste raw Nginx, SSH Auth, or JSON telemetry logs</p>
             </div>
           </div>
           <button
@@ -88,16 +88,16 @@ export const LogIngestionModal: React.FC<LogIngestionModalProps> = ({
         </div>
 
         {/* Content Area */}
-        <div className="p-6 space-y-5 overflow-y-auto flex-1 font-mono text-xs">
+        <div className="p-6 space-y-5 overflow-y-auto flex-1 text-xs">
           {/* Quick Scenario Chips */}
           <div>
-            <span className="text-[11px] text-slate-400 uppercase tracking-wider block mb-2">
+            <span className="text-[11px] text-slate-400 uppercase tracking-wider block mb-2 font-semibold">
               Preset Cyber Attack Scenarios (Instant Load)
             </span>
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => loadScenario('ddosWave', 'ddos_syn_flood.log')}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface border border-surface-border hover:border-accent-purple text-slate-300 hover:text-white transition-all text-xs"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface border border-surface-border hover:border-accent-purple text-slate-300 hover:text-white transition-all text-xs font-medium shadow-sm"
               >
                 <Zap className="w-3.5 h-3.5 text-accent-purple" />
                 <span>Scenario: DDoS SYN Wave</span>
@@ -105,7 +105,7 @@ export const LogIngestionModal: React.FC<LogIngestionModalProps> = ({
 
               <button
                 onClick={() => loadScenario('sqlInjectionBurst', 'sqli_exploit_audit.log')}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface border border-surface-border hover:border-accent-rose text-slate-300 hover:text-white transition-all text-xs"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface border border-surface-border hover:border-accent-rose text-slate-300 hover:text-white transition-all text-xs font-medium shadow-sm"
               >
                 <Zap className="w-3.5 h-3.5 text-accent-rose" />
                 <span>Scenario: SQL Injection Attack</span>
@@ -113,7 +113,7 @@ export const LogIngestionModal: React.FC<LogIngestionModalProps> = ({
 
               <button
                 onClick={() => loadScenario('sshBruteForce', 'auth_sshd_failed.log')}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface border border-surface-border hover:border-accent-amber text-slate-300 hover:text-white transition-all text-xs"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface border border-surface-border hover:border-accent-amber text-slate-300 hover:text-white transition-all text-xs font-medium shadow-sm"
               >
                 <Zap className="w-3.5 h-3.5 text-accent-amber" />
                 <span>Scenario: SSH Brute Force</span>
@@ -122,7 +122,7 @@ export const LogIngestionModal: React.FC<LogIngestionModalProps> = ({
           </div>
 
           {/* File Upload Zone */}
-          <div className="relative border-2 border-dashed border-surface-border hover:border-primary/50 rounded-xl p-5 text-center bg-surface/30 transition-colors">
+          <div className="relative border-2 border-dashed border-surface-border hover:border-primary/50 rounded-2xl p-6 text-center bg-surface/30 transition-colors">
             <input
               type="file"
               accept=".log,.txt,.json,.csv"
@@ -134,14 +134,14 @@ export const LogIngestionModal: React.FC<LogIngestionModalProps> = ({
               <p className="text-xs text-slate-200 font-semibold">
                 {fileName ? `Loaded: ${fileName}` : 'Click to browse or drop log file here'}
               </p>
-              <p className="text-[10px] text-slate-500">Supports .log, .txt, .json, and .csv formats</p>
+              <p className="text-[11px] text-slate-400 font-medium">Supports .log, .txt, .json, and .csv formats</p>
             </div>
           </div>
 
           {/* Or Paste Raw Text */}
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[11px] text-slate-400 uppercase">Or Paste Raw Log Stream</span>
+              <span className="text-[11px] text-slate-400 uppercase font-semibold">Or Paste Raw Log Stream</span>
               <Terminal className="w-3.5 h-3.5 text-slate-500" />
             </div>
             <textarea
@@ -157,8 +157,8 @@ export const LogIngestionModal: React.FC<LogIngestionModalProps> = ({
           {parseResult && (
             <div className="p-4 rounded-xl bg-surface border border-surface-border space-y-3">
               <div className="flex items-center justify-between border-b border-surface-border/60 pb-2">
-                <span className="text-slate-400 font-bold">PARSER TELEMETRY DIAGNOSTICS</span>
-                <span className="px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 font-bold uppercase text-[10px]">
+                <span className="text-slate-400 font-bold uppercase tracking-wider text-[11px]">Parser Telemetry Diagnostics</span>
+                <span className="px-2.5 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 font-bold uppercase text-[10px] border border-indigo-500/20">
                   Format: {parseResult.formatDetected}
                 </span>
               </div>
@@ -166,11 +166,11 @@ export const LogIngestionModal: React.FC<LogIngestionModalProps> = ({
               <div className="grid grid-cols-2 gap-3 text-xs">
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
-                  <span>Total Log Records: <strong>{parseResult.totalParsed}</strong></span>
+                  <span>Total Log Records: <strong className="font-mono text-white">{parseResult.totalParsed}</strong></span>
                 </div>
                 <div className="flex items-center gap-2">
                   <AlertTriangle className="w-4 h-4 text-accent-rose" />
-                  <span>ML Anomalies Flagged: <strong className="text-accent-rose">{parseResult.anomaliesDetected}</strong></span>
+                  <span>ML Anomalies Flagged: <strong className="text-accent-rose font-mono">{parseResult.anomaliesDetected}</strong></span>
                 </div>
               </div>
             </div>
@@ -178,10 +178,10 @@ export const LogIngestionModal: React.FC<LogIngestionModalProps> = ({
         </div>
 
         {/* Footer Actions */}
-        <div className="p-4 border-t border-surface-border bg-surface/50 flex items-center justify-end gap-3 font-mono text-xs">
+        <div className="p-4 border-t border-surface-border bg-surface/50 flex items-center justify-end gap-3 text-xs font-semibold">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-lg bg-surface border border-surface-border hover:bg-surface-card text-slate-400 hover:text-white transition-colors"
+            className="px-4 py-2 rounded-xl bg-surface border border-surface-border hover:bg-surface-card text-slate-400 hover:text-white transition-colors"
           >
             Cancel
           </button>
@@ -189,7 +189,7 @@ export const LogIngestionModal: React.FC<LogIngestionModalProps> = ({
           <button
             disabled={!parseResult || parseResult.events.length === 0}
             onClick={handleConfirmIngest}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary-hover disabled:opacity-40 disabled:cursor-not-allowed text-white font-medium shadow-md shadow-primary/20 transition-all"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary hover:bg-primary-hover disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold shadow-glow-primary transition-all active:scale-95"
           >
             <span>Ingest Into Telemetry Stream</span>
             <ArrowRight className="w-3.5 h-3.5" />
