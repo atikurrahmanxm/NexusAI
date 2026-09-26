@@ -7,6 +7,7 @@ import {
   CheckCircle2,
   Bell,
   UploadCloud,
+  Globe,
   Terminal as TerminalIcon
 } from 'lucide-react';
 import { 
@@ -20,6 +21,7 @@ import { checkBackendHealth, BackendHealthStatus } from './services/apiBridge';
 import { SecurityEvent, TimeSeriesDataPoint, IncidentStatus } from './types/telemetry';
 import { MetricCards } from './components/MetricCards';
 import { AnalyticsCharts } from './components/AnalyticsCharts';
+import { GlobalThreatMap } from './components/GlobalThreatMap';
 import { AnomalyInspector } from './components/AnomalyInspector';
 import { LiveEventFeed } from './components/LiveEventFeed';
 import { AiCopilotSidebar } from './components/AiCopilotSidebar';
@@ -137,7 +139,7 @@ export default function App() {
                 NEXUS AI
               </span>
               <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-primary/20 text-indigo-400 border border-primary/30 font-semibold">
-                v0.8.0 Ingestion Live
+                v0.9.0 Geo Radar Live
               </span>
             </div>
             <p className="text-xs text-slate-400 font-mono">Threat &amp; Anomaly Intelligence</p>
@@ -216,6 +218,11 @@ export default function App() {
           <AnalyticsCharts timeSeriesData={timeSeries} distributionData={distribution} />
         </section>
 
+        {/* Global Threat Geo-Map & Attack Vector Radar */}
+        <section>
+          <GlobalThreatMap events={events} />
+        </section>
+
         {/* Intelligence Split: ML Inspector & AI Copilot */}
         <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
@@ -245,7 +252,7 @@ export default function App() {
             </h2>
             <div className="flex items-center gap-2 text-xs font-mono text-accent-cyan">
               <GitBranch className="w-3.5 h-3.5" />
-              <span>Milestone 8 Completed (Log Ingestion Live)</span>
+              <span>Milestone 9 Completed (Global Threat Radar Live)</span>
             </div>
           </div>
 
@@ -277,12 +284,12 @@ export default function App() {
             <div className="p-4 rounded-xl border border-indigo-500/40 bg-indigo-500/10 shadow-lg shadow-indigo-500/5">
               <div className="flex items-center justify-between text-indigo-400 font-semibold mb-1">
                 <span className="flex items-center gap-1.5">
-                  <UploadCloud className="w-3.5 h-3.5 text-accent-cyan" />
-                  Log Ingestion Engine
+                  <Globe className="w-3.5 h-3.5 text-accent-cyan" />
+                  Global Threat Radar
                 </span>
                 <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
               </div>
-              <p className="text-slate-400 text-[11px]">Raw Nginx, Apache &amp; SSH Auth log parser with preset attack waves.</p>
+              <p className="text-slate-400 text-[11px]">Geospatial attack vector trajectories and country leaderboard.</p>
             </div>
           </div>
         </section>
