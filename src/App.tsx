@@ -8,6 +8,7 @@ import {
   Bell,
   UploadCloud,
   FileText,
+  Boxes,
   Terminal as TerminalIcon
 } from 'lucide-react';
 import { 
@@ -268,7 +269,7 @@ export default function App() {
             </h2>
             <div className="flex items-center gap-2 text-xs font-mono text-accent-cyan">
               <GitBranch className="w-3.5 h-3.5" />
-              <span>Milestone 11 Completed (Executive Report Live)</span>
+              <span>Milestone 12 Completed (Docker Stack Orchestrated)</span>
             </div>
           </div>
 
@@ -291,7 +292,7 @@ export default function App() {
 
             <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5">
               <div className="flex items-center justify-between text-accent-emerald font-semibold mb-1">
-                <span>Threat Map &amp; Firewall</span>
+                <span>Threat Radar &amp; WAF</span>
                 <CheckCircle2 className="w-4 h-4" />
               </div>
               <p className="text-slate-400 text-[11px]">Geospatial attack trajectories &amp; automated iptables/WAF synthesis.</p>
@@ -300,12 +301,12 @@ export default function App() {
             <div className="p-4 rounded-xl border border-indigo-500/40 bg-indigo-500/10 shadow-lg shadow-indigo-500/5">
               <div className="flex items-center justify-between text-indigo-400 font-semibold mb-1">
                 <span className="flex items-center gap-1.5">
-                  <FileText className="w-3.5 h-3.5 text-accent-emerald" />
-                  Executive Audit Dossier
+                  <Boxes className="w-3.5 h-3.5 text-accent-cyan" />
+                  Docker Orchestration
                 </span>
                 <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
               </div>
-              <p className="text-slate-400 text-[11px]">Print-ready PDF threat intelligence audit dossier &amp; JSON exporter.</p>
+              <p className="text-slate-400 text-[11px]">Multi-stage Dockerfiles &amp; docker-compose stack with Nginx &amp; FastAPI.</p>
             </div>
           </div>
         </section>
