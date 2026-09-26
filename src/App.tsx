@@ -7,7 +7,7 @@ import {
   CheckCircle2,
   Bell,
   UploadCloud,
-  Globe,
+  Lock,
   Terminal as TerminalIcon
 } from 'lucide-react';
 import { 
@@ -25,6 +25,7 @@ import { GlobalThreatMap } from './components/GlobalThreatMap';
 import { AnomalyInspector } from './components/AnomalyInspector';
 import { LiveEventFeed } from './components/LiveEventFeed';
 import { AiCopilotSidebar } from './components/AiCopilotSidebar';
+import { FirewallPolicyGenerator } from './components/FirewallPolicyGenerator';
 import { ForensicTable } from './components/ForensicTable';
 import { LogIngestionModal } from './components/LogIngestionModal';
 
@@ -139,7 +140,7 @@ export default function App() {
                 NEXUS AI
               </span>
               <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-primary/20 text-indigo-400 border border-primary/30 font-semibold">
-                v0.9.0 Geo Radar Live
+                v1.0.0 SecOps Suite
               </span>
             </div>
             <p className="text-xs text-slate-400 font-mono">Threat &amp; Anomaly Intelligence</p>
@@ -235,6 +236,11 @@ export default function App() {
           </div>
         </section>
 
+        {/* Automated Firewall & WAF Security Policy Compiler */}
+        <section>
+          <FirewallPolicyGenerator events={events} />
+        </section>
+
         {/* Forensic Deep Packet Investigation & Filterable Audit Table */}
         <section>
           <ForensicTable 
@@ -252,7 +258,7 @@ export default function App() {
             </h2>
             <div className="flex items-center gap-2 text-xs font-mono text-accent-cyan">
               <GitBranch className="w-3.5 h-3.5" />
-              <span>Milestone 9 Completed (Global Threat Radar Live)</span>
+              <span>Milestone 10 Completed (Firewall Compiler Live)</span>
             </div>
           </div>
 
@@ -275,21 +281,21 @@ export default function App() {
 
             <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5">
               <div className="flex items-center justify-between text-accent-emerald font-semibold mb-1">
-                <span>Fullstack Python API</span>
+                <span>Threat Map &amp; Parser</span>
                 <CheckCircle2 className="w-4 h-4" />
               </div>
-              <p className="text-slate-400 text-[11px]">Python 3.10 FastAPI backend with Scikit-Learn outlier inference.</p>
+              <p className="text-slate-400 text-[11px]">Geospatial attack vector trajectories and raw log file ingestion.</p>
             </div>
 
             <div className="p-4 rounded-xl border border-indigo-500/40 bg-indigo-500/10 shadow-lg shadow-indigo-500/5">
               <div className="flex items-center justify-between text-indigo-400 font-semibold mb-1">
                 <span className="flex items-center gap-1.5">
-                  <Globe className="w-3.5 h-3.5 text-accent-cyan" />
-                  Global Threat Radar
+                  <Lock className="w-3.5 h-3.5 text-accent-emerald" />
+                  Firewall Policy Compiler
                 </span>
                 <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
               </div>
-              <p className="text-slate-400 text-[11px]">Geospatial attack vector trajectories and country leaderboard.</p>
+              <p className="text-slate-400 text-[11px]">Automated iptables, UFW, Cloudflare WAF and AWS NACL synthesis.</p>
             </div>
           </div>
         </section>
