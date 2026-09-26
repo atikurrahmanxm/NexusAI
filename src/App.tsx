@@ -10,7 +10,8 @@ import {
   FileText,
   Flame,
   CloudLightning,
-  Terminal as TerminalIcon
+  Terminal as TerminalIcon,
+  Database
 } from 'lucide-react';
 import { 
   INITIAL_SECURITY_EVENTS, 
@@ -33,6 +34,7 @@ import { LogIngestionModal } from './components/LogIngestionModal';
 import { ExecutiveReportModal } from './components/ExecutiveReportModal';
 import { SimulationLabModal } from './components/SimulationLabModal';
 import { LiveStreamControllerModal } from './components/LiveStreamControllerModal';
+import { ThreatIntelHubModal } from './components/ThreatIntelHubModal';
 import { telemetryGateway, StreamMetrics } from './services/websocketService';
 
 export default function App() {
@@ -54,6 +56,7 @@ export default function App() {
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [isSimLabOpen, setIsSimLabOpen] = useState(false);
   const [isStreamModalOpen, setIsStreamModalOpen] = useState(false);
+  const [isThreatIntelOpen, setIsThreatIntelOpen] = useState(false);
   
   const [streamMetrics, setStreamMetrics] = useState<StreamMetrics>(telemetryGateway.getMetrics());
 
@@ -315,6 +318,14 @@ export default function App() {
                 <UploadCloud className="w-4 h-4 text-accent-cyan" />
                 <span>Ingest Raw Logs</span>
               </button>
+
+              <button
+                onClick={() => setIsThreatIntelOpen(true)}
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-surface-card border border-purple-500/40 hover:border-purple-500 text-purple-300 hover:text-white text-xs font-bold transition-all shadow-glow-purple active:scale-95"
+              >
+                <Database className="w-4 h-4 text-accent-purple" />
+                <span>Threat Intel (STIX 2.1)</span>
+              </button>
             </div>
           </div>
 
@@ -365,11 +376,11 @@ export default function App() {
             </h2>
             <div className="flex items-center gap-2 text-xs font-medium text-accent-cyan">
               <GitBranch className="w-3.5 h-3.5" />
-              <span>Milestone 16 Completed (Real-Time WebSocket Stream Gateway &amp; Live Controller)</span>
+              <span>Milestone 17 Completed (STIX/TAXII 2.1 Threat Intel Hub &amp; MITRE Matrix Navigator)</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 text-xs">
             <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5">
               <div className="flex items-center justify-between text-accent-emerald font-semibold mb-1">
                 <span>Core &amp; Metrics</span>
@@ -394,19 +405,37 @@ export default function App() {
               <p className="text-slate-400 text-[11px]">Multi-stage Dockerfiles, SecOps chaos range &amp; localStorage persistence.</p>
             </div>
 
-            <div className="p-4 rounded-xl border border-indigo-500/40 bg-indigo-500/10 shadow-lg shadow-indigo-500/5">
-              <div className="flex items-center justify-between text-indigo-400 font-semibold mb-1">
+            <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5">
+              <div className="flex items-center justify-between text-accent-emerald font-semibold mb-1">
                 <span className="flex items-center gap-1.5">
                   <CloudLightning className="w-3.5 h-3.5 text-accent-cyan" />
-                  WebSocket Stream Gateway
+                  Stream Gateway
+                </span>
+                <CheckCircle2 className="w-4 h-4" />
+              </div>
+              <p className="text-slate-400 text-[11px]">Bi-directional WebSocket streaming, latency probe &amp; reactive gateway controller.</p>
+            </div>
+
+            <div className="p-4 rounded-xl border border-purple-500/40 bg-purple-500/10 shadow-lg shadow-purple-500/5">
+              <div className="flex items-center justify-between text-purple-400 font-semibold mb-1">
+                <span className="flex items-center gap-1.5">
+                  <Database className="w-3.5 h-3.5 text-accent-purple" />
+                  STIX 2.1 Threat Intel
                 </span>
                 <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
               </div>
-              <p className="text-slate-400 text-[11px]">Bi-directional WebSocket streaming, latency probe &amp; reactive gateway controller.</p>
+              <p className="text-slate-400 text-[11px]">STIX/TAXII 2.1 IOC feeds, real-time IP reputation &amp; MITRE ATT&amp;CK matrix.</p>
             </div>
           </div>
         </section>
       </main>
+
+      {/* STIX/TAXII 2.1 Threat Intelligence Hub Modal */}
+      <ThreatIntelHubModal
+        isOpen={isThreatIntelOpen}
+        onClose={() => setIsThreatIntelOpen(false)}
+        events={events}
+      />
 
       {/* Real-Time WebSocket Telemetry Gateway Modal */}
       <LiveStreamControllerModal

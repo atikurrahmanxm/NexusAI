@@ -7,6 +7,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![Docker](https://img.shields.io/badge/Docker-Orchestrated-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 [![WebSocket](https://img.shields.io/badge/WebSocket-RFC_6455-010101?style=for-the-badge&logo=socketdotio&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API)
+[![STIX 2.1](https://img.shields.io/badge/STIX%2FTAXII-2.1_Compliant-8A2BE2?style=for-the-badge)](https://oasis-open.github.io/cti-documentation/)
 [![CI/CD Pipeline](https://img.shields.io/badge/CI%2FCD-GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/features/actions)
 [![Vercel](https://img.shields.io/badge/Vercel-Deploy_Ready-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
@@ -18,6 +19,7 @@
 ## 🚀 Key Architectural Pillars
 
 - ⚡ **Real-Time WebSocket Gateway**: Bi-directional streaming (`ws://127.0.0.1:8000/ws/telemetry`) with heartbeat latency probes and reactive in-browser fallback.
+- 🛰️ **STIX/TAXII 2.1 Threat Intel Hub**: Multi-feed IOC correlation (CISA KEV, AbuseIPDB, AlienVault OTX), real-time IP reputation analyzer, MITRE ATT&CK Enterprise coverage matrix, and STIX 2.1 JSON bundle exporter.
 - 🔍 **Real-Time Threat Telemetry**: Streaming security event parser for Auth, Nginx, Apache, and Firewall logs.
 - 📊 **Data Science & Visualization**: High-fidelity dual-axis time-series charts, threat distribution heatmaps, and severity gauges.
 - 🌍 **Global Threat Geo-Radar**: Interactive world map projecting inbound attack vector trajectories from foreign subnets to protected clusters.
@@ -47,6 +49,7 @@
 - [x] **Milestone 14**: Cloud deployment configs (Vercel, Netlify) & GitHub Actions automated CI/CD pipeline.
 - [x] **Milestone 15**: Inter typography system, obsidian gradient card aesthetics, and modern SecOps color palette.
 - [x] **Milestone 16**: Bi-directional WebSocket telemetry gateway (`/ws/telemetry`), live latency probes & stream controller.
+- [x] **Milestone 17**: STIX/TAXII 2.1 Threat Intel Hub, IP reputation scoring engine & MITRE ATT&CK Matrix navigator.
 
 ---
 
