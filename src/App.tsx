@@ -32,6 +32,8 @@ import { ForensicTable } from './components/ForensicTable';
 import { LogIngestionModal } from './components/LogIngestionModal';
 import { ExecutiveReportModal } from './components/ExecutiveReportModal';
 import { SimulationLabModal } from './components/SimulationLabModal';
+import { LiveStreamControllerModal } from './components/LiveStreamControllerModal';
+import { telemetryGateway, StreamMetrics } from './services/websocketService';
 
 export default function App() {
   const [systemTime, setSystemTime] = useState(new Date().toLocaleTimeString());
@@ -51,7 +53,10 @@ export default function App() {
   const [isLogModalOpen, setIsLogModalOpen] = useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [isSimLabOpen, setIsSimLabOpen] = useState(false);
+  const [isStreamModalOpen, setIsStreamModalOpen] = useState(false);
   
+  const [streamMetrics, setStreamMetrics] = useState<StreamMetrics>(telemetryGateway.getMetrics());
+
   const [backendHealth, setBackendHealth] = useState<BackendHealthStatus>({
     connected: false,
     status: 'standby',
@@ -70,7 +75,7 @@ export default function App() {
     }
   }, [events]);
 
-  // Live real-time clock & backend health probe
+  // Live real-time clock, backend probe & WebSocket gateway telemetry subscription
   useEffect(() => {
     const timer = setInterval(() => {
       setSystemTime(new Date().toLocaleTimeString());
@@ -84,9 +89,33 @@ export default function App() {
     probeBackend();
     const healthInterval = setInterval(probeBackend, 10000);
 
+    // Subscribe to real-time WebSocket / Gateway telemetry stream
+    const unsubEvents = telemetryGateway.subscribeEvents((newEvent) => {
+      setEvents((prev) => [newEvent, ...prev.slice(0, 29)]);
+
+      const nowTime = new Date().toTimeString().substring(0, 5);
+      setTimeSeries((prev) => {
+        const updated = [...prev];
+        const lastIndex = updated.length - 1;
+        updated[lastIndex] = {
+          time: nowTime,
+          threatActivity: Math.min(100, updated[lastIndex].threatActivity + (newEvent.severity === 'critical' ? 8 : 2)),
+          anomalyScore: parseFloat(Math.min(10, Math.max(updated[lastIndex].anomalyScore, newEvent.anomalyScore)).toFixed(1)),
+          isSpike: newEvent.anomalyScore > 7.0
+        };
+        return updated;
+      });
+    });
+
+    const unsubStatus = telemetryGateway.subscribeStatus((newMetrics) => {
+      setStreamMetrics(newMetrics);
+    });
+
     return () => {
       clearInterval(timer);
       clearInterval(healthInterval);
+      unsubEvents();
+      unsubStatus();
     };
   }, []);
 
@@ -210,11 +239,18 @@ export default function App() {
             </span>
           </div>
 
-          <div className="hidden sm:flex items-center gap-2 text-xs px-3 py-1.5 rounded-xl bg-surface-card border border-surface-border font-medium">
-            <Radio className="w-3.5 h-3.5 text-accent-emerald animate-pulse" />
-            <span className="text-slate-400">Telemetry:</span>
-            <span className="text-accent-emerald font-semibold">Online</span>
-          </div>
+          {/* Interactive WebSocket Telemetry Gateway Badge */}
+          <button
+            onClick={() => setIsStreamModalOpen(true)}
+            className="hidden sm:flex items-center gap-2 text-xs px-3 py-1.5 rounded-xl bg-surface-card border border-surface-border hover:border-primary/50 text-slate-200 transition-all font-medium active:scale-95 shadow-sm"
+            title="Configure Real-Time WebSocket Gateway"
+          >
+            <Radio className={`w-3.5 h-3.5 ${streamMetrics.isStreaming ? 'text-accent-emerald animate-pulse' : 'text-slate-500'}`} />
+            <span className="text-slate-400">Stream:</span>
+            <span className={`font-semibold ${streamMetrics.mode === 'WEBSOCKET' ? 'text-accent-emerald' : 'text-accent-cyan'}`}>
+              {streamMetrics.mode === 'WEBSOCKET' ? `WSS (${streamMetrics.latencyMs}ms)` : `Bus (${streamMetrics.latencyMs}ms)`}
+            </span>
+          </button>
 
           <div className="hidden lg:flex items-center gap-2 text-xs px-3 py-1.5 rounded-xl bg-surface-card border border-surface-border font-medium">
             <span className="text-slate-400">Time:</span>
@@ -247,7 +283,15 @@ export default function App() {
               <p className="text-xs text-slate-400 font-medium">Autonomous threat assessment, real-time ML anomaly detection &amp; telemetry</p>
             </div>
 
-            <div className="flex items-center gap-2.5">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <button
+                onClick={() => setIsStreamModalOpen(true)}
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-surface-card border border-cyan-500/40 hover:border-cyan-500 text-cyan-300 hover:text-white text-xs font-bold transition-all shadow-glow-cyan active:scale-95"
+              >
+                <Radio className="w-4 h-4 text-accent-cyan animate-pulse" />
+                <span>Stream Gateway</span>
+              </button>
+
               <button
                 onClick={() => setIsSimLabOpen(true)}
                 className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-rose-600/25 via-rose-600/15 to-transparent border border-rose-500/40 hover:border-rose-500 text-rose-300 hover:text-white text-xs font-bold transition-all shadow-glow-rose active:scale-95"
@@ -271,11 +315,6 @@ export default function App() {
                 <UploadCloud className="w-4 h-4 text-accent-cyan" />
                 <span>Ingest Raw Logs</span>
               </button>
-
-              <div className="hidden sm:flex items-center gap-2 text-xs font-medium text-slate-400 pl-2">
-                <span className="w-2 h-2 rounded-full bg-accent-emerald animate-ping" />
-                <span>Live Stream</span>
-              </div>
             </div>
           </div>
 
@@ -326,7 +365,7 @@ export default function App() {
             </h2>
             <div className="flex items-center gap-2 text-xs font-medium text-accent-cyan">
               <GitBranch className="w-3.5 h-3.5" />
-              <span>Milestone 14 Completed (Cloud CI/CD &amp; Vercel Live)</span>
+              <span>Milestone 16 Completed (Real-Time WebSocket Stream Gateway &amp; Live Controller)</span>
             </div>
           </div>
 
@@ -359,15 +398,21 @@ export default function App() {
               <div className="flex items-center justify-between text-indigo-400 font-semibold mb-1">
                 <span className="flex items-center gap-1.5">
                   <CloudLightning className="w-3.5 h-3.5 text-accent-cyan" />
-                  Cloud CI/CD Pipeline
+                  WebSocket Stream Gateway
                 </span>
                 <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
               </div>
-              <p className="text-slate-400 text-[11px]">GitHub Actions workflow, Vercel &amp; Netlify production deploy configs.</p>
+              <p className="text-slate-400 text-[11px]">Bi-directional WebSocket streaming, latency probe &amp; reactive gateway controller.</p>
             </div>
           </div>
         </section>
       </main>
+
+      {/* Real-Time WebSocket Telemetry Gateway Modal */}
+      <LiveStreamControllerModal
+        isOpen={isStreamModalOpen}
+        onClose={() => setIsStreamModalOpen(false)}
+      />
 
       {/* Log Ingestion Modal */}
       <LogIngestionModal 

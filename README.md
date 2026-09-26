@@ -6,6 +6,7 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![Docker](https://img.shields.io/badge/Docker-Orchestrated-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+[![WebSocket](https://img.shields.io/badge/WebSocket-RFC_6455-010101?style=for-the-badge&logo=socketdotio&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API)
 [![CI/CD Pipeline](https://img.shields.io/badge/CI%2FCD-GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/features/actions)
 [![Vercel](https://img.shields.io/badge/Vercel-Deploy_Ready-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
@@ -16,6 +17,7 @@
 
 ## 🚀 Key Architectural Pillars
 
+- ⚡ **Real-Time WebSocket Gateway**: Bi-directional streaming (`ws://127.0.0.1:8000/ws/telemetry`) with heartbeat latency probes and reactive in-browser fallback.
 - 🔍 **Real-Time Threat Telemetry**: Streaming security event parser for Auth, Nginx, Apache, and Firewall logs.
 - 📊 **Data Science & Visualization**: High-fidelity dual-axis time-series charts, threat distribution heatmaps, and severity gauges.
 - 🌍 **Global Threat Geo-Radar**: Interactive world map projecting inbound attack vector trajectories from foreign subnets to protected clusters.
@@ -43,6 +45,8 @@
 - [x] **Milestone 12**: Multi-service Docker containerization (`Dockerfile`, `nginx.conf`, `docker-compose.yml`).
 - [x] **Milestone 13**: SecOps Chaos Lab simulation range and localStorage state persistence.
 - [x] **Milestone 14**: Cloud deployment configs (Vercel, Netlify) & GitHub Actions automated CI/CD pipeline.
+- [x] **Milestone 15**: Inter typography system, obsidian gradient card aesthetics, and modern SecOps color palette.
+- [x] **Milestone 16**: Bi-directional WebSocket telemetry gateway (`/ws/telemetry`), live latency probes & stream controller.
 
 ---
 
