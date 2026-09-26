@@ -9,6 +9,7 @@ import {
   UploadCloud,
   FileText,
   Boxes,
+  Flame,
   Terminal as TerminalIcon
 } from 'lucide-react';
 import { 
@@ -30,13 +31,27 @@ import { FirewallPolicyGenerator } from './components/FirewallPolicyGenerator';
 import { ForensicTable } from './components/ForensicTable';
 import { LogIngestionModal } from './components/LogIngestionModal';
 import { ExecutiveReportModal } from './components/ExecutiveReportModal';
+import { SimulationLabModal } from './components/SimulationLabModal';
 
 export default function App() {
   const [systemTime, setSystemTime] = useState(new Date().toLocaleTimeString());
-  const [events, setEvents] = useState<SecurityEvent[]>(INITIAL_SECURITY_EVENTS);
+  
+  // Persistent telemetry state from localStorage
+  const [events, setEvents] = useState<SecurityEvent[]>(() => {
+    try {
+      const saved = localStorage.getItem('nexus_secops_events');
+      if (saved) return JSON.parse(saved);
+    } catch {
+      // Fallback
+    }
+    return INITIAL_SECURITY_EVENTS;
+  });
+
   const [timeSeries, setTimeSeries] = useState<TimeSeriesDataPoint[]>(INITIAL_TIMESERIES_DATA);
   const [isLogModalOpen, setIsLogModalOpen] = useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [isSimLabOpen, setIsSimLabOpen] = useState(false);
+  
   const [backendHealth, setBackendHealth] = useState<BackendHealthStatus>({
     connected: false,
     status: 'standby',
@@ -45,6 +60,15 @@ export default function App() {
 
   const metrics = calculateSystemMetrics(events);
   const distribution = getThreatDistribution(events);
+
+  // Sync events to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('nexus_secops_events', JSON.stringify(events));
+    } catch {
+      // Storage quota or error
+    }
+  }, [events]);
 
   // Live real-time clock & backend health probe
   useEffect(() => {
@@ -105,6 +129,31 @@ export default function App() {
     });
   };
 
+  // Handler for campaign injection from Chaos Lab
+  const handleInjectCampaign = (campaignEvents: SecurityEvent[]) => {
+    setEvents(prev => [...campaignEvents, ...prev.slice(0, Math.max(10, 35 - campaignEvents.length))]);
+
+    const nowTime = new Date().toTimeString().substring(0, 5);
+    setTimeSeries(prev => {
+      const updated = [...prev];
+      const lastIndex = updated.length - 1;
+      updated[lastIndex] = {
+        time: nowTime,
+        threatActivity: 92,
+        anomalyScore: 9.4,
+        isSpike: true
+      };
+      return updated;
+    });
+  };
+
+  // Reset baseline telemetry
+  const handleResetBaseline = () => {
+    setEvents(INITIAL_SECURITY_EVENTS);
+    setTimeSeries(INITIAL_TIMESERIES_DATA);
+    localStorage.removeItem('nexus_secops_events');
+  };
+
   // Handler for AI Copilot threat mitigation execution
   const handleMitigateThreat = (target: string) => {
     setEvents(prev =>
@@ -143,7 +192,7 @@ export default function App() {
                 NEXUS AI
               </span>
               <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-primary/20 text-indigo-400 border border-primary/30 font-semibold">
-                v1.1.0 Executive Ready
+                v1.2.0 Chaos Range
               </span>
             </div>
             <p className="text-xs text-slate-400 font-mono">Threat &amp; Anomaly Intelligence</p>
@@ -198,7 +247,15 @@ export default function App() {
               <p className="text-xs text-slate-400">Autonomous telemetry feed &amp; threat assessment</p>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5">
+              <button
+                onClick={() => setIsSimLabOpen(true)}
+                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-rose-600/30 to-rose-600/10 border border-rose-500/40 hover:border-rose-500 text-rose-300 hover:text-white font-mono text-xs font-semibold transition-all shadow-lg shadow-rose-500/5 active:scale-95"
+              >
+                <Flame className="w-4 h-4 text-accent-rose" />
+                <span>Chaos Lab</span>
+              </button>
+
               <button
                 onClick={() => setIsReportModalOpen(true)}
                 className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-surface border border-accent-emerald/40 hover:border-accent-emerald text-accent-emerald hover:text-white font-mono text-xs font-semibold transition-all shadow-lg shadow-emerald-500/5 active:scale-95"
@@ -215,9 +272,9 @@ export default function App() {
                 <span>Ingest Raw Logs</span>
               </button>
 
-              <div className="flex items-center gap-2 text-xs font-mono text-slate-400">
+              <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-slate-400 pl-2">
                 <span className="w-2 h-2 rounded-full bg-accent-emerald animate-ping" />
-                <span>Real-Time Stream Active</span>
+                <span>Live Stream</span>
               </div>
             </div>
           </div>
@@ -269,7 +326,7 @@ export default function App() {
             </h2>
             <div className="flex items-center gap-2 text-xs font-mono text-accent-cyan">
               <GitBranch className="w-3.5 h-3.5" />
-              <span>Milestone 12 Completed (Docker Stack Orchestrated)</span>
+              <span>Milestone 13 Completed (Chaos Range &amp; Persistence Live)</span>
             </div>
           </div>
 
@@ -298,15 +355,15 @@ export default function App() {
               <p className="text-slate-400 text-[11px]">Geospatial attack trajectories &amp; automated iptables/WAF synthesis.</p>
             </div>
 
-            <div className="p-4 rounded-xl border border-indigo-500/40 bg-indigo-500/10 shadow-lg shadow-indigo-500/5">
-              <div className="flex items-center justify-between text-indigo-400 font-semibold mb-1">
+            <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5">
+              <div className="flex items-center justify-between text-accent-emerald font-semibold mb-1">
                 <span className="flex items-center gap-1.5">
                   <Boxes className="w-3.5 h-3.5 text-accent-cyan" />
-                  Docker Orchestration
+                  Docker &amp; Chaos Lab
                 </span>
                 <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
               </div>
-              <p className="text-slate-400 text-[11px]">Multi-stage Dockerfiles &amp; docker-compose stack with Nginx &amp; FastAPI.</p>
+              <p className="text-slate-400 text-[11px]">Multi-stage Dockerfiles, SecOps chaos range &amp; localStorage persistence.</p>
             </div>
           </div>
         </section>
@@ -325,6 +382,14 @@ export default function App() {
         onClose={() => setIsReportModalOpen(false)}
         events={events}
         metrics={metrics}
+      />
+
+      {/* Simulation Lab Modal */}
+      <SimulationLabModal
+        isOpen={isSimLabOpen}
+        onClose={() => setIsSimLabOpen(false)}
+        onInjectCampaign={handleInjectCampaign}
+        onResetBaseline={handleResetBaseline}
       />
 
       {/* Footer */}
