@@ -18,6 +18,7 @@
 
 ## 🚀 Key Architectural Pillars
 
+- 🖥️ **Central Server Fleet & Zero-Trust Mesh**: Multi-cloud node registry (AWS, GCP, DigitalOcean, Azure, Bare-Metal), live CPU/RAM/bandwidth resource metrics, one-line bash telemetry agent provisioning, and 1-click Zero-Trust node isolation to halt lateral threat propagation.
 - ⚡ **Real-Time WebSocket Gateway**: Bi-directional streaming (`ws://127.0.0.1:8000/ws/telemetry`) with heartbeat latency probes and reactive in-browser fallback.
 - 🛰️ **STIX/TAXII 2.1 Threat Intel Hub**: Multi-feed IOC correlation (CISA KEV, AbuseIPDB, AlienVault OTX), real-time IP reputation analyzer, MITRE ATT&CK Enterprise coverage matrix, and STIX 2.1 JSON bundle exporter.
 - 🔍 **Real-Time Threat Telemetry**: Streaming security event parser for Auth, Nginx, Apache, and Firewall logs.
@@ -50,6 +51,7 @@
 - [x] **Milestone 15**: Inter typography system, obsidian gradient card aesthetics, and modern SecOps color palette.
 - [x] **Milestone 16**: Bi-directional WebSocket telemetry gateway (`/ws/telemetry`), live latency probes & stream controller.
 - [x] **Milestone 17**: STIX/TAXII 2.1 Threat Intel Hub, IP reputation scoring engine & MITRE ATT&CK Matrix navigator.
+- [x] **Milestone 18**: Server & Cloud Fleet Manager, dynamic asset registration, live resource monitors & Zero-Trust node isolation.
 
 ---
 

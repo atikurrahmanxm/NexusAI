@@ -11,7 +11,8 @@ import {
   Flame,
   CloudLightning,
   Terminal as TerminalIcon,
-  Database
+  Database,
+  Server
 } from 'lucide-react';
 import { 
   INITIAL_SECURITY_EVENTS, 
@@ -22,6 +23,8 @@ import {
 } from './services/telemetryEngine';
 import { checkBackendHealth, BackendHealthStatus } from './services/apiBridge';
 import { SecurityEvent, TimeSeriesDataPoint, IncidentStatus } from './types/telemetry';
+import { ServerNode } from './types/serverFleet';
+import { loadServerFleet, saveServerFleet } from './services/serverFleetEngine';
 import { MetricCards } from './components/MetricCards';
 import { AnalyticsCharts } from './components/AnalyticsCharts';
 import { GlobalThreatMap } from './components/GlobalThreatMap';
@@ -35,6 +38,7 @@ import { ExecutiveReportModal } from './components/ExecutiveReportModal';
 import { SimulationLabModal } from './components/SimulationLabModal';
 import { LiveStreamControllerModal } from './components/LiveStreamControllerModal';
 import { ThreatIntelHubModal } from './components/ThreatIntelHubModal';
+import { ServerFleetModal } from './components/ServerFleetModal';
 import { telemetryGateway, StreamMetrics } from './services/websocketService';
 
 export default function App() {
@@ -57,6 +61,8 @@ export default function App() {
   const [isSimLabOpen, setIsSimLabOpen] = useState(false);
   const [isStreamModalOpen, setIsStreamModalOpen] = useState(false);
   const [isThreatIntelOpen, setIsThreatIntelOpen] = useState(false);
+  const [isFleetModalOpen, setIsFleetModalOpen] = useState(false);
+  const [fleetNodes, setFleetNodes] = useState<ServerNode[]>(loadServerFleet);
   
   const [streamMetrics, setStreamMetrics] = useState<StreamMetrics>(telemetryGateway.getMetrics());
 
@@ -326,6 +332,14 @@ export default function App() {
                 <Database className="w-4 h-4 text-accent-purple" />
                 <span>Threat Intel (STIX 2.1)</span>
               </button>
+
+              <button
+                onClick={() => setIsFleetModalOpen(true)}
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-surface-card border border-cyan-500/40 hover:border-cyan-500 text-cyan-300 hover:text-white text-xs font-bold transition-all shadow-glow-cyan active:scale-95"
+              >
+                <Server className="w-4 h-4 text-accent-cyan" />
+                <span>Server Fleet ({fleetNodes.length})</span>
+              </button>
             </div>
           </div>
 
@@ -376,11 +390,11 @@ export default function App() {
             </h2>
             <div className="flex items-center gap-2 text-xs font-medium text-accent-cyan">
               <GitBranch className="w-3.5 h-3.5" />
-              <span>Milestone 17 Completed (STIX/TAXII 2.1 Threat Intel Hub &amp; MITRE Matrix Navigator)</span>
+              <span>Milestone 18 Completed (Server &amp; Cloud Fleet Manager with Zero-Trust Isolation)</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 text-xs">
             <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5">
               <div className="flex items-center justify-between text-accent-emerald font-semibold mb-1">
                 <span>Core &amp; Metrics</span>
@@ -416,19 +430,42 @@ export default function App() {
               <p className="text-slate-400 text-[11px]">Bi-directional WebSocket streaming, latency probe &amp; reactive gateway controller.</p>
             </div>
 
-            <div className="p-4 rounded-xl border border-purple-500/40 bg-purple-500/10 shadow-lg shadow-purple-500/5">
-              <div className="flex items-center justify-between text-purple-400 font-semibold mb-1">
+            <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5">
+              <div className="flex items-center justify-between text-accent-emerald font-semibold mb-1">
                 <span className="flex items-center gap-1.5">
                   <Database className="w-3.5 h-3.5 text-accent-purple" />
-                  STIX 2.1 Threat Intel
+                  STIX 2.1 Intel
+                </span>
+                <CheckCircle2 className="w-4 h-4" />
+              </div>
+              <p className="text-slate-400 text-[11px]">STIX/TAXII 2.1 IOC feeds, real-time IP reputation &amp; MITRE matrix.</p>
+            </div>
+
+            <div className="p-4 rounded-xl border border-cyan-500/40 bg-cyan-500/10 shadow-lg shadow-cyan-500/5">
+              <div className="flex items-center justify-between text-cyan-300 font-semibold mb-1">
+                <span className="flex items-center gap-1.5">
+                  <Server className="w-3.5 h-3.5 text-accent-cyan" />
+                  Server Fleet
                 </span>
                 <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
               </div>
-              <p className="text-slate-400 text-[11px]">STIX/TAXII 2.1 IOC feeds, real-time IP reputation &amp; MITRE ATT&amp;CK matrix.</p>
+              <p className="text-slate-400 text-[11px]">Multi-cloud asset registry, live resource metrics &amp; 1-click node isolation.</p>
             </div>
           </div>
         </section>
       </main>
+
+      {/* Central Server Fleet & Cloud Asset Registry Modal */}
+      <ServerFleetModal
+        isOpen={isFleetModalOpen}
+        onClose={() => setIsFleetModalOpen(false)}
+        events={events}
+        fleetNodes={fleetNodes}
+        onUpdateFleet={(updated) => {
+          setFleetNodes(updated);
+          saveServerFleet(updated);
+        }}
+      />
 
       {/* STIX/TAXII 2.1 Threat Intelligence Hub Modal */}
       <ThreatIntelHubModal
