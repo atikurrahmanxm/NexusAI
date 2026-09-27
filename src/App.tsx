@@ -12,7 +12,8 @@ import {
   CloudLightning,
   Terminal as TerminalIcon,
   Database,
-  Server
+  Server,
+  Zap
 } from 'lucide-react';
 import { 
   INITIAL_SECURITY_EVENTS, 
@@ -39,6 +40,7 @@ import { SimulationLabModal } from './components/SimulationLabModal';
 import { LiveStreamControllerModal } from './components/LiveStreamControllerModal';
 import { ThreatIntelHubModal } from './components/ThreatIntelHubModal';
 import { ServerFleetModal } from './components/ServerFleetModal';
+import { SoarPlaybookModal } from './components/SoarPlaybookModal';
 import { telemetryGateway, StreamMetrics } from './services/websocketService';
 
 export default function App() {
@@ -63,6 +65,7 @@ export default function App() {
   const [isThreatIntelOpen, setIsThreatIntelOpen] = useState(false);
   const [isFleetModalOpen, setIsFleetModalOpen] = useState(false);
   const [fleetNodes, setFleetNodes] = useState<ServerNode[]>(loadServerFleet);
+  const [isSoarModalOpen, setIsSoarModalOpen] = useState(false);
   
   const [streamMetrics, setStreamMetrics] = useState<StreamMetrics>(telemetryGateway.getMetrics());
 
@@ -340,6 +343,14 @@ export default function App() {
                 <Server className="w-4 h-4 text-accent-cyan" />
                 <span>Server Fleet ({fleetNodes.length})</span>
               </button>
+
+              <button
+                onClick={() => setIsSoarModalOpen(true)}
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-surface-card border border-purple-500/40 hover:border-purple-500 text-purple-300 hover:text-white text-xs font-bold transition-all shadow-glow-purple active:scale-95"
+              >
+                <Zap className="w-4 h-4 text-accent-purple" />
+                <span>SOAR Playbooks</span>
+              </button>
             </div>
           </div>
 
@@ -390,11 +401,11 @@ export default function App() {
             </h2>
             <div className="flex items-center gap-2 text-xs font-medium text-accent-cyan">
               <GitBranch className="w-3.5 h-3.5" />
-              <span>Milestone 18 Completed (Server &amp; Cloud Fleet Manager with Zero-Trust Isolation)</span>
+              <span>Milestone 19 Completed (SOAR Autonomous Incident Response Playbooks)</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 text-xs">
             <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5">
               <div className="flex items-center justify-between text-accent-emerald font-semibold mb-1">
                 <span>Core &amp; Metrics</span>
@@ -441,19 +452,37 @@ export default function App() {
               <p className="text-slate-400 text-[11px]">STIX/TAXII 2.1 IOC feeds, real-time IP reputation &amp; MITRE matrix.</p>
             </div>
 
-            <div className="p-4 rounded-xl border border-cyan-500/40 bg-cyan-500/10 shadow-lg shadow-cyan-500/5">
-              <div className="flex items-center justify-between text-cyan-300 font-semibold mb-1">
+            <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5">
+              <div className="flex items-center justify-between text-accent-emerald font-semibold mb-1">
                 <span className="flex items-center gap-1.5">
                   <Server className="w-3.5 h-3.5 text-accent-cyan" />
                   Server Fleet
                 </span>
-                <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
+                <CheckCircle2 className="w-4 h-4" />
               </div>
               <p className="text-slate-400 text-[11px]">Multi-cloud asset registry, live resource metrics &amp; 1-click node isolation.</p>
+            </div>
+
+            <div className="p-4 rounded-xl border border-purple-500/40 bg-purple-500/10 shadow-lg shadow-purple-500/5 sm:col-span-2">
+              <div className="flex items-center justify-between text-purple-300 font-semibold mb-1">
+                <span className="flex items-center gap-1.5">
+                  <Zap className="w-3.5 h-3.5 text-accent-purple" />
+                  SOAR Incident Playbooks
+                </span>
+                <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
+              </div>
+              <p className="text-slate-400 text-[11px]">Sub-second automated threat containment pipelines, live simulation &amp; MTTR analytics.</p>
             </div>
           </div>
         </section>
       </main>
+
+      {/* SOAR Automated Incident Playbook Orchestrator Modal */}
+      <SoarPlaybookModal
+        isOpen={isSoarModalOpen}
+        onClose={() => setIsSoarModalOpen(false)}
+        activeAttackerIp="185.220.101.5"
+      />
 
       {/* Central Server Fleet & Cloud Asset Registry Modal */}
       <ServerFleetModal
