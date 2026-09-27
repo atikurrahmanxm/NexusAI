@@ -13,7 +13,8 @@ import {
   Terminal as TerminalIcon,
   Database,
   Server,
-  Zap
+  Zap,
+  BellRing
 } from 'lucide-react';
 import { 
   INITIAL_SECURITY_EVENTS, 
@@ -41,6 +42,7 @@ import { LiveStreamControllerModal } from './components/LiveStreamControllerModa
 import { ThreatIntelHubModal } from './components/ThreatIntelHubModal';
 import { ServerFleetModal } from './components/ServerFleetModal';
 import { SoarPlaybookModal } from './components/SoarPlaybookModal';
+import { AlertWebhookModal } from './components/AlertWebhookModal';
 import { telemetryGateway, StreamMetrics } from './services/websocketService';
 
 export default function App() {
@@ -66,6 +68,7 @@ export default function App() {
   const [isFleetModalOpen, setIsFleetModalOpen] = useState(false);
   const [fleetNodes, setFleetNodes] = useState<ServerNode[]>(loadServerFleet);
   const [isSoarModalOpen, setIsSoarModalOpen] = useState(false);
+  const [isWebhookModalOpen, setIsWebhookModalOpen] = useState(false);
   
   const [streamMetrics, setStreamMetrics] = useState<StreamMetrics>(telemetryGateway.getMetrics());
 
@@ -351,6 +354,14 @@ export default function App() {
                 <Zap className="w-4 h-4 text-accent-purple" />
                 <span>SOAR Playbooks</span>
               </button>
+
+              <button
+                onClick={() => setIsWebhookModalOpen(true)}
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-surface-card border border-indigo-500/40 hover:border-indigo-500 text-indigo-300 hover:text-white text-xs font-bold transition-all shadow-glow-primary active:scale-95"
+              >
+                <BellRing className="w-4 h-4 text-indigo-400" />
+                <span>Webhooks &amp; Alerts</span>
+              </button>
             </div>
           </div>
 
@@ -401,7 +412,7 @@ export default function App() {
             </h2>
             <div className="flex items-center gap-2 text-xs font-medium text-accent-cyan">
               <GitBranch className="w-3.5 h-3.5" />
-              <span>Milestone 19 Completed (SOAR Autonomous Incident Response Playbooks)</span>
+              <span>Milestone 20 Completed (Real-Time Alert Webhooks: Slack, Discord, Telegram &amp; PagerDuty)</span>
             </div>
           </div>
 
@@ -463,19 +474,37 @@ export default function App() {
               <p className="text-slate-400 text-[11px]">Multi-cloud asset registry, live resource metrics &amp; 1-click node isolation.</p>
             </div>
 
-            <div className="p-4 rounded-xl border border-purple-500/40 bg-purple-500/10 shadow-lg shadow-purple-500/5 sm:col-span-2">
-              <div className="flex items-center justify-between text-purple-300 font-semibold mb-1">
+            <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5">
+              <div className="flex items-center justify-between text-accent-emerald font-semibold mb-1">
                 <span className="flex items-center gap-1.5">
                   <Zap className="w-3.5 h-3.5 text-accent-purple" />
-                  SOAR Incident Playbooks
+                  SOAR Playbooks
+                </span>
+                <CheckCircle2 className="w-4 h-4" />
+              </div>
+              <p className="text-slate-400 text-[11px]">Sub-second automated threat containment pipelines &amp; MTTR analytics.</p>
+            </div>
+
+            <div className="p-4 rounded-xl border border-indigo-500/40 bg-indigo-500/10 shadow-lg shadow-indigo-500/5">
+              <div className="flex items-center justify-between text-indigo-300 font-semibold mb-1">
+                <span className="flex items-center gap-1.5">
+                  <BellRing className="w-3.5 h-3.5 text-indigo-400" />
+                  Alert Webhooks
                 </span>
                 <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
               </div>
-              <p className="text-slate-400 text-[11px]">Sub-second automated threat containment pipelines, live simulation &amp; MTTR analytics.</p>
+              <p className="text-slate-400 text-[11px]">Multi-channel incident escalations (Slack, Discord, Telegram, PagerDuty).</p>
             </div>
           </div>
         </section>
       </main>
+
+      {/* Real-Time Alert & Webhook Modal */}
+      <AlertWebhookModal
+        isOpen={isWebhookModalOpen}
+        onClose={() => setIsWebhookModalOpen(false)}
+        latestEvent={events[0]}
+      />
 
       {/* SOAR Automated Incident Playbook Orchestrator Modal */}
       <SoarPlaybookModal
