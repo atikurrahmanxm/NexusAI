@@ -21,7 +21,8 @@ import {
   Crosshair,
   Code2,
   Network,
-  Globe
+  Globe,
+  Key
 } from 'lucide-react';
 import { 
   INITIAL_SECURITY_EVENTS, 
@@ -69,6 +70,9 @@ import { ForensicRcaModal } from './components/ForensicRcaModal';
 import { EasmAsset, DnsQueryLog } from './types/dnsThreatIntel';
 import { loadEasmAssets, saveEasmAssets, loadDnsQueries, saveDnsQueries } from './services/dnsThreatIntelEngine';
 import { DnsThreatIntelModal } from './components/DnsThreatIntelModal';
+import { ApiEndpoint, ApiSecurityEvent } from './types/apiSecurity';
+import { loadApiEndpoints, saveApiEndpoints, loadApiSecurityEvents, saveApiSecurityEvents } from './services/apiSecurityEngine';
+import { ApiSecurityModal } from './components/ApiSecurityModal';
 import { telemetryGateway, StreamMetrics } from './services/websocketService';
 
 export default function App() {
@@ -111,6 +115,9 @@ export default function App() {
   const [easmAssets, setEasmAssets] = useState<EasmAsset[]>(loadEasmAssets);
   const [dnsQueries, setDnsQueries] = useState<DnsQueryLog[]>(loadDnsQueries);
   const [isDnsModalOpen, setIsDnsModalOpen] = useState(false);
+  const [apiEndpoints, setApiEndpoints] = useState<ApiEndpoint[]>(loadApiEndpoints);
+  const [apiSecurityEvents, setApiSecurityEvents] = useState<ApiSecurityEvent[]>(loadApiSecurityEvents);
+  const [isApiSecurityOpen, setIsApiSecurityOpen] = useState(false);
   
   const [streamMetrics, setStreamMetrics] = useState<StreamMetrics>(telemetryGateway.getMetrics());
 
@@ -461,10 +468,18 @@ export default function App() {
 
               <button
                 onClick={() => setIsDnsModalOpen(true)}
-                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-cyan-600/25 via-purple-600/15 to-transparent border border-cyan-500/40 hover:border-cyan-500 text-cyan-300 hover:text-white text-xs font-bold transition-all shadow-glow-cyan active:scale-95"
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-surface-card border border-cyan-500/40 hover:border-cyan-500 text-cyan-300 hover:text-white text-xs font-bold transition-all shadow-glow-cyan active:scale-95"
               >
                 <Globe className="w-4 h-4 text-accent-cyan" />
                 <span>EASM &amp; DNS Intel</span>
+              </button>
+
+              <button
+                onClick={() => setIsApiSecurityOpen(true)}
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-purple-600/25 via-rose-600/15 to-transparent border border-purple-500/40 hover:border-purple-500 text-purple-300 hover:text-white text-xs font-bold transition-all shadow-glow-purple active:scale-95"
+              >
+                <Key className="w-4 h-4 text-accent-purple" />
+                <span>API Security &amp; WAAP</span>
               </button>
             </div>
           </div>
@@ -666,8 +681,8 @@ export default function App() {
               <p className="text-slate-400 text-[11px]">Attack path reconstruction, blast radius perimeter &amp; SHA-256 evidence vault.</p>
             </div>
 
-            <div className="p-4 rounded-xl border border-cyan-500/40 bg-cyan-500/10 shadow-lg shadow-cyan-500/5">
-              <div className="flex items-center justify-between text-cyan-300 font-semibold mb-1">
+            <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5">
+              <div className="flex items-center justify-between text-accent-emerald font-semibold mb-1">
                 <span className="flex items-center gap-1.5">
                   <Globe className="w-3.5 h-3.5 text-accent-cyan" />
                   EASM &amp; DNS Threat Intel
@@ -675,6 +690,17 @@ export default function App() {
                 <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
               </div>
               <p className="text-slate-400 text-[11px]">Subdomain takeover auditor, Shannon entropy ($H(X)$) ML classifier &amp; DNS tunneling defense.</p>
+            </div>
+
+            <div className="p-4 rounded-xl border border-purple-500/40 bg-purple-500/10 shadow-lg shadow-purple-500/5">
+              <div className="flex items-center justify-between text-purple-300 font-semibold mb-1">
+                <span className="flex items-center gap-1.5">
+                  <Key className="w-3.5 h-3.5 text-accent-purple" />
+                  API Security &amp; OWASP Top 10
+                </span>
+                <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
+              </div>
+              <p className="text-slate-400 text-[11px]">Shadow/Zombie API discovery, JWT signature &amp; BOLA/IDOR inspector, and OpenAPI 3.1 exporter.</p>
             </div>
           </div>
         </section>
@@ -758,6 +784,22 @@ export default function App() {
         onUpdateDnsQueries={(updated) => {
           setDnsQueries(updated);
           saveDnsQueries(updated);
+        }}
+      />
+
+      {/* API Security Shield & OWASP API Top 10 Guard Modal */}
+      <ApiSecurityModal
+        isOpen={isApiSecurityOpen}
+        onClose={() => setIsApiSecurityOpen(false)}
+        endpoints={apiEndpoints}
+        onUpdateEndpoints={(updated) => {
+          setApiEndpoints(updated);
+          saveApiEndpoints(updated);
+        }}
+        securityEvents={apiSecurityEvents}
+        onUpdateSecurityEvents={(updated) => {
+          setApiSecurityEvents(updated);
+          saveApiSecurityEvents(updated);
         }}
       />
 
