@@ -15,7 +15,8 @@ import {
   Server,
   Zap,
   BellRing,
-  Bug
+  Bug,
+  UserCheck
 } from 'lucide-react';
 import { 
   INITIAL_SECURITY_EVENTS, 
@@ -45,6 +46,9 @@ import { ServerFleetModal } from './components/ServerFleetModal';
 import { SoarPlaybookModal } from './components/SoarPlaybookModal';
 import { AlertWebhookModal } from './components/AlertWebhookModal';
 import { VulnerabilityScannerModal } from './components/VulnerabilityScannerModal';
+import { UserProfile, AuditLogEntry } from './types/rbacAudit';
+import { loadActiveUser, saveActiveUser, loadAuditLogs, saveAuditLogs } from './services/rbacAuditEngine';
+import { RbacAuditModal } from './components/RbacAuditModal';
 import { telemetryGateway, StreamMetrics } from './services/websocketService';
 
 export default function App() {
@@ -72,6 +76,9 @@ export default function App() {
   const [isSoarModalOpen, setIsSoarModalOpen] = useState(false);
   const [isWebhookModalOpen, setIsWebhookModalOpen] = useState(false);
   const [isVulnModalOpen, setIsVulnModalOpen] = useState(false);
+  const [activeUser, setActiveUser] = useState<UserProfile>(loadActiveUser);
+  const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>(loadAuditLogs);
+  const [isRbacModalOpen, setIsRbacModalOpen] = useState(false);
   
   const [streamMetrics, setStreamMetrics] = useState<StreamMetrics>(telemetryGateway.getMetrics());
 
@@ -280,13 +287,19 @@ export default function App() {
               <Bell className="w-4 h-4" />
               <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-accent-rose animate-ping" />
             </button>
-            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center text-xs font-bold text-white shadow-md">
-              AR
-            </div>
-            <div className="hidden xl:block text-left">
-              <p className="text-xs font-bold text-slate-200">Atikur Rahman</p>
-              <p className="text-[10px] text-accent-emerald font-semibold">SecOps Commander</p>
-            </div>
+            <button
+              onClick={() => setIsRbacModalOpen(true)}
+              className="flex items-center gap-2.5 p-1 rounded-xl hover:bg-surface-card/70 border border-transparent hover:border-indigo-500/30 transition-all text-left group cursor-pointer"
+              title="Switch Persona & View Audit Ledger"
+            >
+              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center text-xs font-bold text-white shadow-md group-hover:ring-2 group-hover:ring-indigo-400/50 transition-all">
+                {activeUser.avatarInitials}
+              </div>
+              <div className="hidden xl:block text-left">
+                <p className="text-xs font-bold text-slate-200 group-hover:text-indigo-300 transition-colors">{activeUser.name}</p>
+                <p className="text-[10px] text-accent-emerald font-semibold">{activeUser.roleTitle}</p>
+              </div>
+            </button>
           </div>
         </div>
       </header>
@@ -373,6 +386,14 @@ export default function App() {
                 <Bug className="w-4 h-4 text-accent-rose" />
                 <span>CVE Scanner</span>
               </button>
+
+              <button
+                onClick={() => setIsRbacModalOpen(true)}
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-surface-card border border-indigo-500/40 hover:border-indigo-500 text-indigo-300 hover:text-white text-xs font-bold transition-all shadow-glow-primary active:scale-95"
+              >
+                <UserCheck className="w-4 h-4 text-indigo-400" />
+                <span>Audit &amp; RBAC</span>
+              </button>
             </div>
           </div>
 
@@ -423,7 +444,7 @@ export default function App() {
             </h2>
             <div className="flex items-center gap-2 text-xs font-medium text-accent-cyan">
               <GitBranch className="w-3.5 h-3.5" />
-              <span>Milestone 21 Completed (Vulnerability Assessment &amp; CVE 1-Click Patch Manager)</span>
+              <span>Milestone 22 Completed (Role-Based Access Control &amp; Immutable Audit Ledger)</span>
             </div>
           </div>
 
@@ -507,8 +528,8 @@ export default function App() {
               <p className="text-slate-400 text-[11px]">Multi-channel incident escalations (Slack, Discord, Telegram, PagerDuty).</p>
             </div>
 
-            <div className="p-4 rounded-xl border border-rose-500/40 bg-rose-500/10 shadow-lg shadow-rose-500/5">
-              <div className="flex items-center justify-between text-rose-300 font-semibold mb-1">
+            <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5">
+              <div className="flex items-center justify-between text-accent-emerald font-semibold mb-1">
                 <span className="flex items-center gap-1.5">
                   <Bug className="w-3.5 h-3.5 text-accent-rose" />
                   CVE Patch Manager
@@ -517,9 +538,36 @@ export default function App() {
               </div>
               <p className="text-slate-400 text-[11px]">Continuous package audits, CVSS v3.1 scoring &amp; 1-click remediation.</p>
             </div>
+
+            <div className="p-4 rounded-xl border border-indigo-500/40 bg-indigo-500/10 shadow-lg shadow-indigo-500/5">
+              <div className="flex items-center justify-between text-indigo-300 font-semibold mb-1">
+                <span className="flex items-center gap-1.5">
+                  <UserCheck className="w-3.5 h-3.5 text-indigo-400" />
+                  RBAC &amp; Audit Ledger
+                </span>
+                <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
+              </div>
+              <p className="text-slate-400 text-[11px]">SOC 2 cryptographically chained SHA-256 audit ledger &amp; 4 operator personas.</p>
+            </div>
           </div>
         </section>
       </main>
+
+      {/* Role-Based Access Control & Immutable Cryptographic Audit Ledger Modal */}
+      <RbacAuditModal
+        isOpen={isRbacModalOpen}
+        onClose={() => setIsRbacModalOpen(false)}
+        activeUser={activeUser}
+        onSelectUser={(u) => {
+          setActiveUser(u);
+          saveActiveUser(u);
+        }}
+        auditLogs={auditLogs}
+        onUpdateAuditLogs={(logs) => {
+          setAuditLogs(logs);
+          saveAuditLogs(logs);
+        }}
+      />
 
       {/* Vulnerability Assessment & CVE Patch Manager Modal */}
       <VulnerabilityScannerModal
