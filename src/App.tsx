@@ -17,7 +17,8 @@ import {
   BellRing,
   Bug,
   UserCheck,
-  ShieldCheck
+  ShieldCheck,
+  Crosshair
 } from 'lucide-react';
 import { 
   INITIAL_SECURITY_EVENTS, 
@@ -53,6 +54,9 @@ import { RbacAuditModal } from './components/RbacAuditModal';
 import { PostureFinding } from './types/cspm';
 import { loadCspmFindings, saveCspmFindings } from './services/cspmEngine';
 import { CspmModal } from './components/CspmModal';
+import { AttackerAttribution, HoneypotSensor } from './types/threatHunt';
+import { loadAttackers, saveAttackers, loadHoneypots, saveHoneypots } from './services/threatHuntEngine';
+import { ThreatHuntModal } from './components/ThreatHuntModal';
 import { telemetryGateway, StreamMetrics } from './services/websocketService';
 
 export default function App() {
@@ -85,6 +89,9 @@ export default function App() {
   const [isRbacModalOpen, setIsRbacModalOpen] = useState(false);
   const [cspmFindings, setCspmFindings] = useState<PostureFinding[]>(loadCspmFindings);
   const [isCspmModalOpen, setIsCspmModalOpen] = useState(false);
+  const [attackers, setAttackers] = useState<AttackerAttribution[]>(loadAttackers);
+  const [honeypots, setHoneypots] = useState<HoneypotSensor[]>(loadHoneypots);
+  const [isThreatHuntOpen, setIsThreatHuntOpen] = useState(false);
   
   const [streamMetrics, setStreamMetrics] = useState<StreamMetrics>(telemetryGateway.getMetrics());
 
@@ -408,6 +415,14 @@ export default function App() {
                 <ShieldCheck className="w-4 h-4 text-accent-cyan" />
                 <span>Cloud Posture (CSPM)</span>
               </button>
+
+              <button
+                onClick={() => setIsThreatHuntOpen(true)}
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-rose-600/25 via-rose-600/15 to-transparent border border-rose-500/40 hover:border-rose-500 text-rose-300 hover:text-white text-xs font-bold transition-all shadow-glow-rose active:scale-95"
+              >
+                <Crosshair className="w-4 h-4 text-accent-rose" />
+                <span>Threat Hunter &amp; Decoys</span>
+              </button>
             </div>
           </div>
 
@@ -458,7 +473,7 @@ export default function App() {
             </h2>
             <div className="flex items-center gap-2 text-xs font-medium text-accent-cyan">
               <GitBranch className="w-3.5 h-3.5" />
-              <span>Milestone 23 Completed (Cloud Security Posture Management - CSPM &amp; Multi-Compliance Auditor)</span>
+              <span>Milestone 24 Completed (Threat Hunting &amp; Deception Grid - Attacker Attribution &amp; Honeypots)</span>
             </div>
           </div>
 
@@ -564,8 +579,8 @@ export default function App() {
               <p className="text-slate-400 text-[11px]">SOC 2 cryptographically chained SHA-256 audit ledger &amp; 4 operator personas.</p>
             </div>
 
-            <div className="p-4 rounded-xl border border-cyan-500/40 bg-cyan-500/10 shadow-lg shadow-cyan-500/5">
-              <div className="flex items-center justify-between text-cyan-300 font-semibold mb-1">
+            <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5">
+              <div className="flex items-center justify-between text-accent-emerald font-semibold mb-1">
                 <span className="flex items-center gap-1.5">
                   <ShieldCheck className="w-3.5 h-3.5 text-accent-cyan" />
                   Cloud Posture (CSPM)
@@ -573,6 +588,17 @@ export default function App() {
                 <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
               </div>
               <p className="text-slate-400 text-[11px]">Multi-cloud CIS v8, PCI-DSS, SOC 2 compliance auditor &amp; 1-click auto-remediation.</p>
+            </div>
+
+            <div className="p-4 rounded-xl border border-rose-500/40 bg-rose-500/10 shadow-lg shadow-rose-500/5">
+              <div className="flex items-center justify-between text-rose-300 font-semibold mb-1">
+                <span className="flex items-center gap-1.5">
+                  <Crosshair className="w-3.5 h-3.5 text-accent-rose" />
+                  Threat Hunting &amp; Honeypots
+                </span>
+                <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
+              </div>
+              <p className="text-slate-400 text-[11px]">BGP ASN geolocation attribution, decoy canary honeypots &amp; RFC 2142 abuse dispatcher.</p>
             </div>
           </div>
         </section>
@@ -602,6 +628,22 @@ export default function App() {
         onUpdateFindings={(updated) => {
           setCspmFindings(updated);
           saveCspmFindings(updated);
+        }}
+      />
+
+      {/* Threat Hunting, Target Asset Attribution & Deception Honeypot Grid Modal */}
+      <ThreatHuntModal
+        isOpen={isThreatHuntOpen}
+        onClose={() => setIsThreatHuntOpen(false)}
+        attackers={attackers}
+        onUpdateAttackers={(updated) => {
+          setAttackers(updated);
+          saveAttackers(updated);
+        }}
+        honeypots={honeypots}
+        onUpdateHoneypots={(updated) => {
+          setHoneypots(updated);
+          saveHoneypots(updated);
         }}
       />
 
