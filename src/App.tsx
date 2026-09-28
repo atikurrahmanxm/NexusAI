@@ -22,7 +22,8 @@ import {
   Code2,
   Network,
   Globe,
-  Key
+  Key,
+  Compass
 } from 'lucide-react';
 import { 
   INITIAL_SECURITY_EVENTS, 
@@ -73,6 +74,9 @@ import { DnsThreatIntelModal } from './components/DnsThreatIntelModal';
 import { ApiEndpoint, ApiSecurityEvent } from './types/apiSecurity';
 import { loadApiEndpoints, saveApiEndpoints, loadApiSecurityEvents, saveApiSecurityEvents } from './services/apiSecurityEngine';
 import { ApiSecurityModal } from './components/ApiSecurityModal';
+import { IdentityUser, AuthSessionEvent } from './types/itdr';
+import { loadItdrUsers, saveItdrUsers, loadItdrSessions, saveItdrSessions } from './services/itdrEngine';
+import { ItdrModal } from './components/ItdrModal';
 import { telemetryGateway, StreamMetrics } from './services/websocketService';
 
 export default function App() {
@@ -118,6 +122,9 @@ export default function App() {
   const [apiEndpoints, setApiEndpoints] = useState<ApiEndpoint[]>(loadApiEndpoints);
   const [apiSecurityEvents, setApiSecurityEvents] = useState<ApiSecurityEvent[]>(loadApiSecurityEvents);
   const [isApiSecurityOpen, setIsApiSecurityOpen] = useState(false);
+  const [identityUsers, setIdentityUsers] = useState<IdentityUser[]>(loadItdrUsers);
+  const [authSessions, setAuthSessions] = useState<AuthSessionEvent[]>(loadItdrSessions);
+  const [isItdrOpen, setIsItdrOpen] = useState(false);
   
   const [streamMetrics, setStreamMetrics] = useState<StreamMetrics>(telemetryGateway.getMetrics());
 
@@ -476,10 +483,18 @@ export default function App() {
 
               <button
                 onClick={() => setIsApiSecurityOpen(true)}
-                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-purple-600/25 via-rose-600/15 to-transparent border border-purple-500/40 hover:border-purple-500 text-purple-300 hover:text-white text-xs font-bold transition-all shadow-glow-purple active:scale-95"
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-surface-card border border-purple-500/40 hover:border-purple-500 text-purple-300 hover:text-white text-xs font-bold transition-all shadow-glow-purple active:scale-95"
               >
                 <Key className="w-4 h-4 text-accent-purple" />
                 <span>API Security &amp; WAAP</span>
+              </button>
+
+              <button
+                onClick={() => setIsItdrOpen(true)}
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-indigo-600/25 via-cyan-600/15 to-transparent border border-indigo-500/40 hover:border-indigo-500 text-indigo-300 hover:text-white text-xs font-bold transition-all shadow-glow-primary active:scale-95"
+              >
+                <Compass className="w-4 h-4 text-indigo-400" />
+                <span>ITDR &amp; Identity Shield</span>
               </button>
             </div>
           </div>
@@ -692,8 +707,8 @@ export default function App() {
               <p className="text-slate-400 text-[11px]">Subdomain takeover auditor, Shannon entropy ($H(X)$) ML classifier &amp; DNS tunneling defense.</p>
             </div>
 
-            <div className="p-4 rounded-xl border border-purple-500/40 bg-purple-500/10 shadow-lg shadow-purple-500/5">
-              <div className="flex items-center justify-between text-purple-300 font-semibold mb-1">
+            <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5">
+              <div className="flex items-center justify-between text-accent-emerald font-semibold mb-1">
                 <span className="flex items-center gap-1.5">
                   <Key className="w-3.5 h-3.5 text-accent-purple" />
                   API Security &amp; OWASP Top 10
@@ -701,6 +716,17 @@ export default function App() {
                 <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
               </div>
               <p className="text-slate-400 text-[11px]">Shadow/Zombie API discovery, JWT signature &amp; BOLA/IDOR inspector, and OpenAPI 3.1 exporter.</p>
+            </div>
+
+            <div className="p-4 rounded-xl border border-indigo-500/40 bg-indigo-500/10 shadow-lg shadow-indigo-500/5">
+              <div className="flex items-center justify-between text-indigo-300 font-semibold mb-1">
+                <span className="flex items-center gap-1.5">
+                  <Compass className="w-3.5 h-3.5 text-indigo-400" />
+                  ITDR &amp; Impossible Travel
+                </span>
+                <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
+              </div>
+              <p className="text-slate-400 text-[11px]">Haversine geovelocity anomaly detection, MFA push bombing fatigue &amp; rogue session containment.</p>
             </div>
           </div>
         </section>
@@ -800,6 +826,22 @@ export default function App() {
         onUpdateSecurityEvents={(updated) => {
           setApiSecurityEvents(updated);
           saveApiSecurityEvents(updated);
+        }}
+      />
+
+      {/* Identity Threat Detection & Response (ITDR) Modal */}
+      <ItdrModal
+        isOpen={isItdrOpen}
+        onClose={() => setIsItdrOpen(false)}
+        users={identityUsers}
+        onUpdateUsers={(updated) => {
+          setIdentityUsers(updated);
+          saveItdrUsers(updated);
+        }}
+        sessions={authSessions}
+        onUpdateSessions={(updated) => {
+          setAuthSessions(updated);
+          saveItdrSessions(updated);
         }}
       />
 
