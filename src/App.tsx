@@ -16,7 +16,8 @@ import {
   Zap,
   BellRing,
   Bug,
-  UserCheck
+  UserCheck,
+  ShieldCheck
 } from 'lucide-react';
 import { 
   INITIAL_SECURITY_EVENTS, 
@@ -49,6 +50,9 @@ import { VulnerabilityScannerModal } from './components/VulnerabilityScannerModa
 import { UserProfile, AuditLogEntry } from './types/rbacAudit';
 import { loadActiveUser, saveActiveUser, loadAuditLogs, saveAuditLogs } from './services/rbacAuditEngine';
 import { RbacAuditModal } from './components/RbacAuditModal';
+import { PostureFinding } from './types/cspm';
+import { loadCspmFindings, saveCspmFindings } from './services/cspmEngine';
+import { CspmModal } from './components/CspmModal';
 import { telemetryGateway, StreamMetrics } from './services/websocketService';
 
 export default function App() {
@@ -79,6 +83,8 @@ export default function App() {
   const [activeUser, setActiveUser] = useState<UserProfile>(loadActiveUser);
   const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>(loadAuditLogs);
   const [isRbacModalOpen, setIsRbacModalOpen] = useState(false);
+  const [cspmFindings, setCspmFindings] = useState<PostureFinding[]>(loadCspmFindings);
+  const [isCspmModalOpen, setIsCspmModalOpen] = useState(false);
   
   const [streamMetrics, setStreamMetrics] = useState<StreamMetrics>(telemetryGateway.getMetrics());
 
@@ -394,6 +400,14 @@ export default function App() {
                 <UserCheck className="w-4 h-4 text-indigo-400" />
                 <span>Audit &amp; RBAC</span>
               </button>
+
+              <button
+                onClick={() => setIsCspmModalOpen(true)}
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-surface-card border border-cyan-500/40 hover:border-cyan-500 text-cyan-300 hover:text-white text-xs font-bold transition-all shadow-glow-cyan active:scale-95"
+              >
+                <ShieldCheck className="w-4 h-4 text-accent-cyan" />
+                <span>Cloud Posture (CSPM)</span>
+              </button>
             </div>
           </div>
 
@@ -444,7 +458,7 @@ export default function App() {
             </h2>
             <div className="flex items-center gap-2 text-xs font-medium text-accent-cyan">
               <GitBranch className="w-3.5 h-3.5" />
-              <span>Milestone 22 Completed (Role-Based Access Control &amp; Immutable Audit Ledger)</span>
+              <span>Milestone 23 Completed (Cloud Security Posture Management - CSPM &amp; Multi-Compliance Auditor)</span>
             </div>
           </div>
 
@@ -539,8 +553,8 @@ export default function App() {
               <p className="text-slate-400 text-[11px]">Continuous package audits, CVSS v3.1 scoring &amp; 1-click remediation.</p>
             </div>
 
-            <div className="p-4 rounded-xl border border-indigo-500/40 bg-indigo-500/10 shadow-lg shadow-indigo-500/5">
-              <div className="flex items-center justify-between text-indigo-300 font-semibold mb-1">
+            <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5">
+              <div className="flex items-center justify-between text-accent-emerald font-semibold mb-1">
                 <span className="flex items-center gap-1.5">
                   <UserCheck className="w-3.5 h-3.5 text-indigo-400" />
                   RBAC &amp; Audit Ledger
@@ -548,6 +562,17 @@ export default function App() {
                 <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
               </div>
               <p className="text-slate-400 text-[11px]">SOC 2 cryptographically chained SHA-256 audit ledger &amp; 4 operator personas.</p>
+            </div>
+
+            <div className="p-4 rounded-xl border border-cyan-500/40 bg-cyan-500/10 shadow-lg shadow-cyan-500/5">
+              <div className="flex items-center justify-between text-cyan-300 font-semibold mb-1">
+                <span className="flex items-center gap-1.5">
+                  <ShieldCheck className="w-3.5 h-3.5 text-accent-cyan" />
+                  Cloud Posture (CSPM)
+                </span>
+                <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
+              </div>
+              <p className="text-slate-400 text-[11px]">Multi-cloud CIS v8, PCI-DSS, SOC 2 compliance auditor &amp; 1-click auto-remediation.</p>
             </div>
           </div>
         </section>
@@ -566,6 +591,17 @@ export default function App() {
         onUpdateAuditLogs={(logs) => {
           setAuditLogs(logs);
           saveAuditLogs(logs);
+        }}
+      />
+
+      {/* Cloud Security Posture Management (CSPM) & Multi-Compliance Auditor Modal */}
+      <CspmModal
+        isOpen={isCspmModalOpen}
+        onClose={() => setIsCspmModalOpen(false)}
+        findings={cspmFindings}
+        onUpdateFindings={(updated) => {
+          setCspmFindings(updated);
+          saveCspmFindings(updated);
         }}
       />
 

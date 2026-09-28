@@ -12,6 +12,7 @@
 [![Webhooks](https://img.shields.io/badge/Alerts-Multi--Channel_Webhooks-008080?style=for-the-badge&logo=slack&logoColor=white)](https://github.com/atikurrahmanxm/NexusAI)
 [![CVE Scanner](https://img.shields.io/badge/CVE-CVSS_v3.1_Audited-critical?style=for-the-badge&logo=securityscorecard&logoColor=white)](https://github.com/atikurrahmanxm/NexusAI)
 [![RBAC](https://img.shields.io/badge/RBAC-SOC_2_Audit_Ledger-indigo?style=for-the-badge&logo=auth0&logoColor=white)](https://github.com/atikurrahmanxm/NexusAI)
+[![CSPM](https://img.shields.io/badge/CSPM-CIS_%26_Multi--Compliance-00BFFF?style=for-the-badge&logo=amazonwebservices&logoColor=white)](https://github.com/atikurrahmanxm/NexusAI)
 [![CI/CD Pipeline](https://img.shields.io/badge/CI%2FCD-GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/features/actions)
 [![Vercel](https://img.shields.io/badge/Vercel-Deploy_Ready-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
@@ -22,6 +23,7 @@
 
 ## 🚀 Key Architectural Pillars
 
+- ☁️ **Cloud Security Posture Management (CSPM) & Compliance Guardrails**: Real-time multi-cloud configuration auditing (AWS, GCP, Azure, Kubernetes), cross-walk compliance scoring (CIS Benchmarks v8, PCI-DSS 4.0, SOC 2 Type II, HIPAA, ISO 27001), live control plane scanning, and 1-click automated remediation generating Cloud CLI and Terraform HCL snippets.
 - 🔐 **Role-Based Access Control (RBAC) & Immutable Audit Ledger**: Granular clearance tiers (Commander, Analyst, Auditor, DevOps), live operator persona switcher, cryptographically signed SHA-256 tamper-evident audit ledger, and SOC 2 / ISO 27001 compliance export.
 - 🛡️ **Vulnerability Assessment & CVE Patch Engine**: Continuous host package auditing, CVSS v3.1 severity calculation, CISA KEV exploitation tracking, and 1-click remediation script generation.
 - 🔔 **Real-Time Alert & Multi-Channel Webhook Center**: Instant incident escalation pipelines streaming to Slack (`#secops-alerts`), Discord, Telegram bots, PagerDuty, and custom enterprise SIEM HTTP webhooks with sub-50ms dispatch latency.
@@ -64,6 +66,7 @@
 - [x] **Milestone 20**: Real-Time Alert Webhooks (Slack, Discord, Telegram, PagerDuty) with live simulation & audit history.
 - [x] **Milestone 21**: Vulnerability Assessment & CVE Patch Management Engine with CVSS v3.1 scoring & live fleet audit.
 - [x] **Milestone 22**: Role-Based Access Control (RBAC) & Immutable Cryptographic Audit Ledger with SHA-256 signatures & multi-operator persona switcher.
+- [x] **Milestone 23**: Cloud Security Posture Management (CSPM) & Multi-Standard Compliance Auditor (CIS v8, PCI-DSS 4.0, SOC 2) with 1-click Terraform/CLI auto-remediation.
 
 ---
 
