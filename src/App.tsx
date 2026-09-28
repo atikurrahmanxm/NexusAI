@@ -23,7 +23,8 @@ import {
   Network,
   Globe,
   Key,
-  Compass
+  Compass,
+  Package
 } from 'lucide-react';
 import { 
   INITIAL_SECURITY_EVENTS, 
@@ -77,6 +78,9 @@ import { ApiSecurityModal } from './components/ApiSecurityModal';
 import { IdentityUser, AuthSessionEvent } from './types/itdr';
 import { loadItdrUsers, saveItdrUsers, loadItdrSessions, saveItdrSessions } from './services/itdrEngine';
 import { ItdrModal } from './components/ItdrModal';
+import { SbomComponent } from './types/supplyChain';
+import { loadSbomComponents, saveSbomComponents } from './services/supplyChainEngine';
+import { SupplyChainModal } from './components/SupplyChainModal';
 import { telemetryGateway, StreamMetrics } from './services/websocketService';
 
 export default function App() {
@@ -125,6 +129,8 @@ export default function App() {
   const [identityUsers, setIdentityUsers] = useState<IdentityUser[]>(loadItdrUsers);
   const [authSessions, setAuthSessions] = useState<AuthSessionEvent[]>(loadItdrSessions);
   const [isItdrOpen, setIsItdrOpen] = useState(false);
+  const [sbomComponents, setSbomComponents] = useState<SbomComponent[]>(loadSbomComponents);
+  const [isSbomModalOpen, setIsSbomModalOpen] = useState(false);
   
   const [streamMetrics, setStreamMetrics] = useState<StreamMetrics>(telemetryGateway.getMetrics());
 
@@ -491,10 +497,18 @@ export default function App() {
 
               <button
                 onClick={() => setIsItdrOpen(true)}
-                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-indigo-600/25 via-cyan-600/15 to-transparent border border-indigo-500/40 hover:border-indigo-500 text-indigo-300 hover:text-white text-xs font-bold transition-all shadow-glow-primary active:scale-95"
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-surface-card border border-indigo-500/40 hover:border-indigo-500 text-indigo-300 hover:text-white text-xs font-bold transition-all shadow-glow-primary active:scale-95"
               >
                 <Compass className="w-4 h-4 text-indigo-400" />
                 <span>ITDR &amp; Identity Shield</span>
+              </button>
+
+              <button
+                onClick={() => setIsSbomModalOpen(true)}
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-teal-600/25 via-emerald-600/15 to-transparent border border-teal-500/40 hover:border-teal-500 text-teal-300 hover:text-white text-xs font-bold transition-all shadow-glow-teal active:scale-95"
+              >
+                <Package className="w-4 h-4 text-teal-400" />
+                <span>SBOM &amp; Supply Chain</span>
               </button>
             </div>
           </div>
@@ -718,8 +732,8 @@ export default function App() {
               <p className="text-slate-400 text-[11px]">Shadow/Zombie API discovery, JWT signature &amp; BOLA/IDOR inspector, and OpenAPI 3.1 exporter.</p>
             </div>
 
-            <div className="p-4 rounded-xl border border-indigo-500/40 bg-indigo-500/10 shadow-lg shadow-indigo-500/5">
-              <div className="flex items-center justify-between text-indigo-300 font-semibold mb-1">
+            <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5">
+              <div className="flex items-center justify-between text-accent-emerald font-semibold mb-1">
                 <span className="flex items-center gap-1.5">
                   <Compass className="w-3.5 h-3.5 text-indigo-400" />
                   ITDR &amp; Impossible Travel
@@ -727,6 +741,17 @@ export default function App() {
                 <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
               </div>
               <p className="text-slate-400 text-[11px]">Haversine geovelocity anomaly detection, MFA push bombing fatigue &amp; rogue session containment.</p>
+            </div>
+
+            <div className="p-4 rounded-xl border border-teal-500/40 bg-teal-500/10 shadow-lg shadow-teal-500/5">
+              <div className="flex items-center justify-between text-teal-300 font-semibold mb-1">
+                <span className="flex items-center gap-1.5">
+                  <Package className="w-3.5 h-3.5 text-teal-400" />
+                  Supply Chain &amp; SBOM (Capstone)
+                </span>
+                <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
+              </div>
+              <p className="text-slate-400 text-[11px]">CycloneDX 1.5 SBOM, Levenshtein typosquatting ML hunter, XZ backdoor sentinel &amp; license auditor.</p>
             </div>
           </div>
         </section>
@@ -842,6 +867,17 @@ export default function App() {
         onUpdateSessions={(updated) => {
           setAuthSessions(updated);
           saveItdrSessions(updated);
+        }}
+      />
+
+      {/* Software Supply Chain Security & SBOM Modal */}
+      <SupplyChainModal
+        isOpen={isSbomModalOpen}
+        onClose={() => setIsSbomModalOpen(false)}
+        components={sbomComponents}
+        onUpdateComponents={(updated) => {
+          setSbomComponents(updated);
+          saveSbomComponents(updated);
         }}
       />
 

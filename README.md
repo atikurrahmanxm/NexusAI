@@ -19,6 +19,7 @@
 [![EASM & DNS Intel](https://img.shields.io/badge/EASM-DNS_Threat_Intel_Entropy-teal?style=for-the-badge&logo=cloudflare&logoColor=white)](https://github.com/atikurrahmanxm/NexusAI)
 [![API Security](https://img.shields.io/badge/API_Security-OWASP_Top_10_Shield-darkviolet?style=for-the-badge&logo=fastapi&logoColor=white)](https://github.com/atikurrahmanxm/NexusAI)
 [![ITDR](https://img.shields.io/badge/ITDR-Identity_Impossible_Travel-indigo?style=for-the-badge&logo=auth0&logoColor=white)](https://github.com/atikurrahmanxm/NexusAI)
+[![SBOM](https://img.shields.io/badge/SBOM-CycloneDX_1.5_Certified-008080?style=for-the-badge&logo=dependabot&logoColor=white)](https://github.com/atikurrahmanxm/NexusAI)
 [![CI/CD Pipeline](https://img.shields.io/badge/CI%2FCD-GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/features/actions)
 [![Vercel](https://img.shields.io/badge/Vercel-Deploy_Ready-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
@@ -34,6 +35,7 @@
 - 🌐 **External Attack Surface Management (EASM) & DNS Threat Intel**: Continuous subdomain asset enumeration, dangling CNAME takeover vulnerability detection (AWS S3, Azure WebApps), mathematical Shannon Entropy ($H(X) = -\sum P(x) \log_2 P(x)$) machine learning DGA C2 classifier, DNS tunneling Base64 exfiltration decoder, and 1-click BIND9 RPZ, CoreDNS, and Pi-hole sinkhole policy compiler.
 - 🛡️ **API Security Shield & OWASP API Top 10 Guard (WAAP)**: Shadow and Zombie API route discovery, continuous sensitive PII exposure auditing, real-time BOLA/IDOR object authorization mismatch detector, JWT cryptographic signature & `alg: none` exploit inspector, token rate-limiting anomaly controls, and 1-click OpenAPI 3.1 & Cloudflare API Shield policy exporter.
 - 👤 **Identity Threat Detection & Response (ITDR) & Impossible Travel**: Mathematical Haversine geovelocity anomaly detection calculating spherical great-circle travel speed ($v = \frac{d}{\Delta t}$), commercial flight threshold violation warnings (> 900 km/h), MFA push-bombing fatigue defense, and 1-click active rogue session termination and account locking.
+- 📦 **Software Supply Chain Security & SBOM Intelligence (CycloneDX 1.5 & SPDX 2.3)**: Automated dependency tree auditing, mathematical Levenshtein Distance ($D[i,j]$) typosquatting and homoglyph package scanner, upstream XZ Utils backdoor detection, GPL copyleft viral license compliance enforcement, and 1-click NIST SP 800-161 compliant cryptographic SBOM exporter.
 - 🎯 **Threat Hunting Studio & Deception Honeypot Grid**: Deep packet adversary attribution mapping attacker IP, BGP ASN, ISP, and city geolocations, target asset impact tracking across production APIs and financial endpoints, synthetic deception sensors (SSH, WordPress, AWS Honeytoken, MySQL baits), and 1-click RFC 2142 automated ISP abuse notice generator.
 - ☁️ **Cloud Security Posture Management (CSPM) & Compliance Guardrails**: Real-time multi-cloud configuration auditing (AWS, GCP, Azure, Kubernetes), cross-walk compliance scoring (CIS Benchmarks v8, PCI-DSS 4.0, SOC 2 Type II, HIPAA, ISO 27001), live control plane scanning, and 1-click automated remediation generating Cloud CLI and Terraform HCL snippets.
 - 🔐 **Role-Based Access Control (RBAC) & Immutable Audit Ledger**: Granular clearance tiers (Commander, Analyst, Auditor, DevOps), live operator persona switcher, cryptographically signed SHA-256 tamper-evident audit ledger, and SOC 2 / ISO 27001 compliance export.
@@ -85,6 +87,7 @@
 - [x] **Milestone 27**: External Attack Surface Management (EASM) & DNS Threat Intelligence with Shannon Entropy DGA ML engine, subdomain takeover auditor, and BIND9/CoreDNS sinkhole exporter.
 - [x] **Milestone 28**: API Security Shield & OWASP API Top 10 Guard with Shadow API discovery, JWT cryptographic validator, BOLA/IDOR inspector, and OpenAPI 3.1 exporter.
 - [x] **Milestone 29**: Identity Threat Detection & Response (ITDR) with Haversine velocity impossible travel engine, MFA fatigue detector, and session revocation.
+- [x] **Milestone 30**: Software Supply Chain Security & SBOM Intelligence with Levenshtein typosquatting ML hunter, CycloneDX 1.5 JSON exporter, and upstream backdoor mitigation.
 
 ---
 
