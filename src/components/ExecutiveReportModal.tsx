@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { 
   Printer, 
   Download, 
@@ -24,6 +24,21 @@ export const ExecutiveReportModal: React.FC<ExecutiveReportModalProps> = ({
   events,
   metrics
 }) => {
+  // ESC key listener to quickly close modal
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const handlePrint = () => {
@@ -55,24 +70,47 @@ export const ExecutiveReportModal: React.FC<ExecutiveReportModalProps> = ({
   const criticalIncidents = events.filter(e => e.attackType !== 'Benign').slice(0, 6);
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-surface-card border border-surface-border rounded-2xl max-w-4xl w-full overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200 flex flex-col my-8 printable-dossier">
-        {/* Top Control Bar (Hidden when printing) */}
-        <div className="p-4 border-b border-surface-border bg-surface/80 flex items-center justify-between no-print font-sans">
-          <div className="flex items-center gap-2">
-            <FileText className="w-4 h-4 text-indigo-400" />
-            <span className="text-xs font-semibold text-slate-200">
-              Executive Threat Intelligence Dossier (PDF &amp; Print Preview)
-            </span>
+    <div 
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          onClose();
+        }
+      }}
+      className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
+    >
+      {/* 1. Viewport Floating Close Button (Always visible at the top right of the screen) */}
+      <button
+        onClick={onClose}
+        className="fixed top-4 right-4 sm:right-6 z-[60] px-4 py-2 rounded-full bg-rose-600 hover:bg-rose-500 text-white font-extrabold text-xs flex items-center gap-2 shadow-2xl border border-rose-300/40 backdrop-blur-md cursor-pointer transition-all hover:scale-105 active:scale-95 no-print"
+        title="Close Executive Audit (ESC)"
+      >
+        <X className="w-4 h-4 stroke-[3]" />
+        <span>CLOSE (✕)</span>
+      </button>
+
+      {/* Modal Container */}
+      <div className="bg-surface-card border border-surface-border rounded-2xl max-w-4xl w-full overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200 flex flex-col my-8 printable-dossier relative">
+        {/* 2. Sticky Top Control Bar (Never scrolls out of view) */}
+        <div className="sticky top-0 z-40 p-4 border-b border-surface-border bg-[#0D1322]/95 backdrop-blur-xl flex flex-wrap items-center justify-between gap-3 no-print font-sans shadow-lg">
+          <div className="flex items-center gap-2.5">
+            <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+              <FileText className="w-4 h-4" />
+            </div>
+            <div>
+              <span className="text-xs font-bold text-white tracking-wide block">
+                Executive Threat Intelligence Dossier
+              </span>
+              <span className="text-[10px] text-slate-400">PDF Audit &amp; Print Preview</span>
+            </div>
           </div>
 
-          <div className="flex items-center gap-2 text-xs font-semibold">
+          <div className="flex items-center gap-2.5 text-xs font-semibold">
             <button
               onClick={handlePrint}
               className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary hover:bg-primary-hover text-white transition-all shadow-glow-primary active:scale-95"
             >
               <Printer className="w-3.5 h-3.5" />
-              <span>Print / Save as PDF</span>
+              <span>Print / PDF</span>
             </button>
 
             <button
@@ -80,20 +118,23 @@ export const ExecutiveReportModal: React.FC<ExecutiveReportModalProps> = ({
               className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-surface border border-surface-border hover:border-primary text-slate-200 hover:text-white transition-all shadow-sm"
             >
               <Download className="w-3.5 h-3.5 text-accent-cyan" />
-              <span>Export JSON</span>
+              <span className="hidden sm:inline">Export JSON</span>
             </button>
 
+            {/* Prominent High-Contrast Red Cross Button */}
             <button
               onClick={onClose}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-surface transition-colors ml-2"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-rose-500/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/40 hover:border-rose-400 transition-all font-bold cursor-pointer active:scale-95 shadow-glow-rose ml-1"
+              title="Close Executive Audit"
             >
-              <X className="w-4 h-4" />
+              <X className="w-4 h-4 stroke-[3]" />
+              <span>Close (✕)</span>
             </button>
           </div>
         </div>
 
         {/* Printable Report Body */}
-        <div className="p-8 sm:p-10 space-y-8 font-sans bg-surface-card text-slate-100 print:text-black print:bg-white">
+        <div className="p-6 sm:p-10 space-y-8 font-sans bg-surface-card text-slate-100 print:text-black print:bg-white">
           {/* Header */}
           <div className="border-b-2 border-primary/40 pb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
@@ -224,6 +265,27 @@ export const ExecutiveReportModal: React.FC<ExecutiveReportModalProps> = ({
               <p className="text-[10px] text-slate-400 print:text-slate-600 font-medium">Lead SecOps &amp; ML Systems Architect</p>
               <p className="text-[10px] text-slate-500 font-mono">Electronic Verification Signed</p>
             </div>
+          </div>
+        </div>
+
+        {/* 3. Bottom Control Bar (Close Option at the end of report) */}
+        <div className="p-4 border-t border-surface-border bg-surface/90 flex flex-wrap items-center justify-between gap-3 no-print font-sans">
+          <span className="text-xs text-slate-400 font-mono">
+            NexusAI Executive Audit &bull; SOC 2 Type II Certified
+          </span>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handlePrint}
+              className="px-4 py-2 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-bold transition-all shadow-glow-primary active:scale-95"
+            >
+              Print / Save PDF
+            </button>
+            <button
+              onClick={onClose}
+              className="px-4 py-2 rounded-xl bg-rose-500/15 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/40 text-xs font-bold transition-all cursor-pointer active:scale-95"
+            >
+              Close Dossier (✕)
+            </button>
           </div>
         </div>
       </div>

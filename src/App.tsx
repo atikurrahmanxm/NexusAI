@@ -468,6 +468,15 @@ export default function App() {
     )
   })).filter(section => section.items.length > 0);
 
+  // Flat list of all tools for quick search dropdown
+  const allModules = sidebarNavSections.flatMap(section => section.items);
+  const searchResults = toolSearchQuery.trim()
+    ? allModules.filter(item =>
+        item.name.toLowerCase().includes(toolSearchQuery.toLowerCase()) ||
+        item.badge.toLowerCase().includes(toolSearchQuery.toLowerCase())
+      )
+    : [];
+
   return (
     <div className="min-h-screen bg-[#070B14] text-slate-100 flex flex-col font-sans selection:bg-indigo-500/30 selection:text-white">
       {/* 1. Top Executive Bloomberg Cyber Ticker Strip */}
@@ -566,7 +575,7 @@ export default function App() {
         </div>
 
         {/* Palantir Command Center Quick Launch Bar */}
-        <div className="hidden md:flex items-center gap-2.5 flex-1 max-w-xl mx-6">
+        <div className="hidden md:flex items-center gap-2.5 flex-1 max-w-xl mx-6 relative">
           <div className="relative w-full">
             <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
             <input 
@@ -579,16 +588,49 @@ export default function App() {
             {toolSearchQuery && (
               <button
                 onClick={() => setToolSearchQuery('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white text-xs"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white text-xs cursor-pointer"
               >
                 &times;
               </button>
+            )}
+
+            {/* Instant Search Results Dropdown */}
+            {searchResults.length > 0 && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-[#0D1322] border border-surface-border rounded-xl shadow-2xl p-2 z-50 max-h-72 overflow-y-auto space-y-1 font-sans">
+                <div className="text-[10px] uppercase font-bold text-slate-500 px-2 py-1 flex items-center justify-between border-b border-surface-border/60 pb-1 mb-1">
+                  <span>MATCHING MODULES</span>
+                  <span className="text-accent-cyan font-mono">{searchResults.length} FOUND</span>
+                </div>
+                {searchResults.map((item, idx) => {
+                  const Icon = item.icon;
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        item.onClick();
+                        setToolSearchQuery('');
+                      }}
+                      className="w-full flex items-center justify-between p-2 rounded-lg hover:bg-surface-card text-left transition-colors group cursor-pointer"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className={`p-1.5 rounded-lg bg-surface border border-surface-border group-hover:scale-105 transition-transform ${item.color}`}>
+                          <Icon className="w-3.5 h-3.5" />
+                        </div>
+                        <span className="text-xs font-bold text-slate-200 group-hover:text-white">{item.name}</span>
+                      </div>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-surface-border text-accent-cyan">
+                        {item.badge}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             )}
           </div>
         </div>
 
         {/* Quick Executive Action Buttons & Persona Switcher */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           <button
             onClick={handleSimulateAttack}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-rose-600/30 to-rose-700/20 border border-rose-500/50 hover:border-rose-400 text-rose-300 hover:text-white text-xs font-bold transition-all shadow-glow-rose active:scale-95 cursor-pointer"
@@ -599,8 +641,26 @@ export default function App() {
           </button>
 
           <button
+            onClick={() => setIsSimLabOpen(true)}
+            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-card border border-rose-500/40 hover:border-rose-400 text-rose-300 hover:text-white text-xs font-bold transition-all shadow-glow-rose active:scale-95 cursor-pointer"
+            title="Chaos Lab & Adversary Range"
+          >
+            <Flame className="w-3.5 h-3.5 text-accent-rose" />
+            <span>Chaos Lab</span>
+          </button>
+
+          <button
+            onClick={() => setIsStreamModalOpen(true)}
+            className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-card border border-cyan-500/40 hover:border-accent-cyan text-cyan-300 hover:text-white text-xs font-bold transition-all shadow-glow-cyan active:scale-95 cursor-pointer"
+            title="Real-Time WebSocket Telemetry Gateway"
+          >
+            <Radio className="w-3.5 h-3.5 text-accent-cyan animate-pulse" />
+            <span>Gateway</span>
+          </button>
+
+          <button
             onClick={() => setIsReportModalOpen(true)}
-            className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-card border border-emerald-500/40 hover:border-accent-emerald text-accent-emerald hover:text-white text-xs font-bold transition-all shadow-glow-emerald active:scale-95"
+            className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-card border border-emerald-500/40 hover:border-accent-emerald text-accent-emerald hover:text-white text-xs font-bold transition-all shadow-glow-emerald active:scale-95 cursor-pointer"
             title="Export SOC 2 Compliant Executive PDF Audit"
           >
             <FileText className="w-3.5 h-3.5 text-accent-emerald" />
