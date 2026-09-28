@@ -20,7 +20,8 @@ import {
   ShieldCheck,
   Crosshair,
   Code2,
-  Network
+  Network,
+  Globe
 } from 'lucide-react';
 import { 
   INITIAL_SECURITY_EVENTS, 
@@ -65,6 +66,9 @@ import { DetectionStudioModal } from './components/DetectionStudioModal';
 import { IncidentCase } from './types/forensicRca';
 import { loadIncidentCases, saveIncidentCases } from './services/forensicRcaEngine';
 import { ForensicRcaModal } from './components/ForensicRcaModal';
+import { EasmAsset, DnsQueryLog } from './types/dnsThreatIntel';
+import { loadEasmAssets, saveEasmAssets, loadDnsQueries, saveDnsQueries } from './services/dnsThreatIntelEngine';
+import { DnsThreatIntelModal } from './components/DnsThreatIntelModal';
 import { telemetryGateway, StreamMetrics } from './services/websocketService';
 
 export default function App() {
@@ -104,6 +108,9 @@ export default function App() {
   const [isDetectionStudioOpen, setIsDetectionStudioOpen] = useState(false);
   const [incidentCases, setIncidentCases] = useState<IncidentCase[]>(loadIncidentCases);
   const [isRcaModalOpen, setIsRcaModalOpen] = useState(false);
+  const [easmAssets, setEasmAssets] = useState<EasmAsset[]>(loadEasmAssets);
+  const [dnsQueries, setDnsQueries] = useState<DnsQueryLog[]>(loadDnsQueries);
+  const [isDnsModalOpen, setIsDnsModalOpen] = useState(false);
   
   const [streamMetrics, setStreamMetrics] = useState<StreamMetrics>(telemetryGateway.getMetrics());
 
@@ -446,10 +453,18 @@ export default function App() {
 
               <button
                 onClick={() => setIsRcaModalOpen(true)}
-                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-rose-600/25 via-cyan-600/15 to-transparent border border-rose-500/40 hover:border-cyan-500 text-rose-300 hover:text-white text-xs font-bold transition-all shadow-glow-rose active:scale-95"
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-surface-card border border-rose-500/40 hover:border-rose-500 text-rose-300 hover:text-white text-xs font-bold transition-all shadow-glow-rose active:scale-95"
               >
                 <Network className="w-4 h-4 text-accent-rose" />
                 <span>Incident RCA Graph</span>
+              </button>
+
+              <button
+                onClick={() => setIsDnsModalOpen(true)}
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-cyan-600/25 via-purple-600/15 to-transparent border border-cyan-500/40 hover:border-cyan-500 text-cyan-300 hover:text-white text-xs font-bold transition-all shadow-glow-cyan active:scale-95"
+              >
+                <Globe className="w-4 h-4 text-accent-cyan" />
+                <span>EASM &amp; DNS Intel</span>
               </button>
             </div>
           </div>
@@ -640,8 +655,8 @@ export default function App() {
               <p className="text-slate-400 text-[11px]">Multi-SIEM transpiler (Splunk, Elastic, Sentinel) &amp; sub-microsecond rule matcher.</p>
             </div>
 
-            <div className="p-4 rounded-xl border border-rose-500/40 bg-rose-500/10 shadow-lg shadow-rose-500/5">
-              <div className="flex items-center justify-between text-rose-300 font-semibold mb-1">
+            <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5">
+              <div className="flex items-center justify-between text-accent-emerald font-semibold mb-1">
                 <span className="flex items-center gap-1.5">
                   <Network className="w-3.5 h-3.5 text-accent-rose" />
                   Incident RCA &amp; Kill-Chain
@@ -649,6 +664,17 @@ export default function App() {
                 <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
               </div>
               <p className="text-slate-400 text-[11px]">Attack path reconstruction, blast radius perimeter &amp; SHA-256 evidence vault.</p>
+            </div>
+
+            <div className="p-4 rounded-xl border border-cyan-500/40 bg-cyan-500/10 shadow-lg shadow-cyan-500/5">
+              <div className="flex items-center justify-between text-cyan-300 font-semibold mb-1">
+                <span className="flex items-center gap-1.5">
+                  <Globe className="w-3.5 h-3.5 text-accent-cyan" />
+                  EASM &amp; DNS Threat Intel
+                </span>
+                <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
+              </div>
+              <p className="text-slate-400 text-[11px]">Subdomain takeover auditor, Shannon entropy ($H(X)$) ML classifier &amp; DNS tunneling defense.</p>
             </div>
           </div>
         </section>
@@ -716,6 +742,22 @@ export default function App() {
         onUpdateCases={(updated) => {
           setIncidentCases(updated);
           saveIncidentCases(updated);
+        }}
+      />
+
+      {/* External Attack Surface Management & DNS Threat Intel Modal */}
+      <DnsThreatIntelModal
+        isOpen={isDnsModalOpen}
+        onClose={() => setIsDnsModalOpen(false)}
+        easmAssets={easmAssets}
+        onUpdateEasmAssets={(updated) => {
+          setEasmAssets(updated);
+          saveEasmAssets(updated);
+        }}
+        dnsQueries={dnsQueries}
+        onUpdateDnsQueries={(updated) => {
+          setDnsQueries(updated);
+          saveDnsQueries(updated);
         }}
       />
 

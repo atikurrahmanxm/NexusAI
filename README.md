@@ -16,6 +16,7 @@
 [![Threat Hunting](https://img.shields.io/badge/Threat_Hunting-Deception_Honeypots-crimson?style=for-the-badge&logo=target&logoColor=white)](https://github.com/atikurrahmanxm/NexusAI)
 [![Sigma Rules](https://img.shields.io/badge/Sigma-Multi--SIEM_Transpiler-blueviolet?style=for-the-badge&logo=yaml&logoColor=white)](https://github.com/atikurrahmanxm/NexusAI)
 [![Incident RCA](https://img.shields.io/badge/Incident_RCA-Kill--Chain_Timeline-darkred?style=for-the-badge&logo=traildex&logoColor=white)](https://github.com/atikurrahmanxm/NexusAI)
+[![EASM & DNS Intel](https://img.shields.io/badge/EASM-DNS_Threat_Intel_Entropy-teal?style=for-the-badge&logo=cloudflare&logoColor=white)](https://github.com/atikurrahmanxm/NexusAI)
 [![CI/CD Pipeline](https://img.shields.io/badge/CI%2FCD-GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/features/actions)
 [![Vercel](https://img.shields.io/badge/Vercel-Deploy_Ready-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
@@ -28,6 +29,7 @@
 
 - 🔬 **Detection Engineering Studio & Sigma Compiler**: Open Sigma v2.0 detection rule authoring, sub-microsecond abstract syntax tree (AST) telemetry matching, automated query transpiler converting Sigma logic into native Splunk SPL, Elasticsearch DSL, Microsoft Sentinel KQL, and CrowdStrike CQL syntax, with 1-click YAML bundle export.
 - 🧬 **Automated Incident Forensics & Root Cause Analysis (RCA) Graph**: Sequential cyber kill-chain execution timeline reconstruction (Reconnaissance, Exploitation, Lateral Movement, Containment), blast radius risk perimeter scoring, cryptographic SHA-256 forensic artifact evidence vault (PCAP, process lineage, memory dumps), and 1-click incident post-mortem markdown dossier exporter.
+- 🌐 **External Attack Surface Management (EASM) & DNS Threat Intel**: Continuous subdomain asset enumeration, dangling CNAME takeover vulnerability detection (AWS S3, Azure WebApps), mathematical Shannon Entropy ($H(X) = -\sum P(x) \log_2 P(x)$) machine learning DGA C2 classifier, DNS tunneling Base64 exfiltration decoder, and 1-click BIND9 RPZ, CoreDNS, and Pi-hole sinkhole policy compiler.
 - 🎯 **Threat Hunting Studio & Deception Honeypot Grid**: Deep packet adversary attribution mapping attacker IP, BGP ASN, ISP, and city geolocations, target asset impact tracking across production APIs and financial endpoints, synthetic deception sensors (SSH, WordPress, AWS Honeytoken, MySQL baits), and 1-click RFC 2142 automated ISP abuse notice generator.
 - ☁️ **Cloud Security Posture Management (CSPM) & Compliance Guardrails**: Real-time multi-cloud configuration auditing (AWS, GCP, Azure, Kubernetes), cross-walk compliance scoring (CIS Benchmarks v8, PCI-DSS 4.0, SOC 2 Type II, HIPAA, ISO 27001), live control plane scanning, and 1-click automated remediation generating Cloud CLI and Terraform HCL snippets.
 - 🔐 **Role-Based Access Control (RBAC) & Immutable Audit Ledger**: Granular clearance tiers (Commander, Analyst, Auditor, DevOps), live operator persona switcher, cryptographically signed SHA-256 tamper-evident audit ledger, and SOC 2 / ISO 27001 compliance export.
@@ -76,6 +78,7 @@
 - [x] **Milestone 24**: Threat Hunting & Deception Grid (Target Asset Attribution, BGP ASN GeoIP, Canary Honeypots & RFC 2142 Abuse Dispatcher).
 - [x] **Milestone 25**: Detection Engineering Studio & Sigma Rule Compiler (Multi-SIEM Transpiler for Splunk, Elastic, Sentinel & Falcon).
 - [x] **Milestone 26**: Incident Forensics Timeline & Root Cause Analysis (RCA) Graph with cyber kill-chain reconstruction and SHA-256 artifact vault.
+- [x] **Milestone 27**: External Attack Surface Management (EASM) & DNS Threat Intelligence with Shannon Entropy DGA ML engine, subdomain takeover auditor, and BIND9/CoreDNS sinkhole exporter.
 
 ---
 
