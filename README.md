@@ -10,6 +10,7 @@
 [![STIX 2.1](https://img.shields.io/badge/STIX%2FTAXII-2.1_Compliant-8A2BE2?style=for-the-badge)](https://oasis-open.github.io/cti-documentation/)
 [![SOAR](https://img.shields.io/badge/SOAR-Autonomous_Playbooks-9932CC?style=for-the-badge&logo=fastapi&logoColor=white)](https://github.com/atikurrahmanxm/NexusAI)
 [![Webhooks](https://img.shields.io/badge/Alerts-Multi--Channel_Webhooks-008080?style=for-the-badge&logo=slack&logoColor=white)](https://github.com/atikurrahmanxm/NexusAI)
+[![CVE Scanner](https://img.shields.io/badge/CVE-CVSS_v3.1_Audited-critical?style=for-the-badge&logo=securityscorecard&logoColor=white)](https://github.com/atikurrahmanxm/NexusAI)
 [![CI/CD Pipeline](https://img.shields.io/badge/CI%2FCD-GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/features/actions)
 [![Vercel](https://img.shields.io/badge/Vercel-Deploy_Ready-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
@@ -20,6 +21,7 @@
 
 ## 🚀 Key Architectural Pillars
 
+- 🛡️ **Vulnerability Assessment & CVE Patch Engine**: Continuous host package auditing, CVSS v3.1 severity calculation, CISA KEV exploitation tracking, and 1-click remediation script generation.
 - 🔔 **Real-Time Alert & Multi-Channel Webhook Center**: Instant incident escalation pipelines streaming to Slack (`#secops-alerts`), Discord, Telegram bots, PagerDuty, and custom enterprise SIEM HTTP webhooks with sub-50ms dispatch latency.
 - ⚡ **SOAR Autonomous Playbook Engine**: Real-time SecOps automation pipelines (DDoS, SQLi, Brute-Force, Ransomware C2) executing sub-second containment (MTTR 1.2s vs manual 45m).
 - 🖥️ **Central Server Fleet & Zero-Trust Mesh**: Multi-cloud node registry (AWS, GCP, DigitalOcean, Azure, Bare-Metal), live CPU/RAM/bandwidth resource metrics, one-line bash telemetry agent provisioning, and 1-click Zero-Trust node isolation to halt lateral threat propagation.
@@ -58,6 +60,7 @@
 - [x] **Milestone 18**: Server & Cloud Fleet Manager, dynamic asset registration, live resource monitors & Zero-Trust node isolation.
 - [x] **Milestone 19**: SOAR Automated Incident Playbook Engine with MTTR analytics & sequential action pipelines.
 - [x] **Milestone 20**: Real-Time Alert Webhooks (Slack, Discord, Telegram, PagerDuty) with live simulation & audit history.
+- [x] **Milestone 21**: Vulnerability Assessment & CVE Patch Management Engine with CVSS v3.1 scoring & live fleet audit.
 
 ---
 

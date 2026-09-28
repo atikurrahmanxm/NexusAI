@@ -14,7 +14,8 @@ import {
   Database,
   Server,
   Zap,
-  BellRing
+  BellRing,
+  Bug
 } from 'lucide-react';
 import { 
   INITIAL_SECURITY_EVENTS, 
@@ -43,6 +44,7 @@ import { ThreatIntelHubModal } from './components/ThreatIntelHubModal';
 import { ServerFleetModal } from './components/ServerFleetModal';
 import { SoarPlaybookModal } from './components/SoarPlaybookModal';
 import { AlertWebhookModal } from './components/AlertWebhookModal';
+import { VulnerabilityScannerModal } from './components/VulnerabilityScannerModal';
 import { telemetryGateway, StreamMetrics } from './services/websocketService';
 
 export default function App() {
@@ -69,6 +71,7 @@ export default function App() {
   const [fleetNodes, setFleetNodes] = useState<ServerNode[]>(loadServerFleet);
   const [isSoarModalOpen, setIsSoarModalOpen] = useState(false);
   const [isWebhookModalOpen, setIsWebhookModalOpen] = useState(false);
+  const [isVulnModalOpen, setIsVulnModalOpen] = useState(false);
   
   const [streamMetrics, setStreamMetrics] = useState<StreamMetrics>(telemetryGateway.getMetrics());
 
@@ -362,6 +365,14 @@ export default function App() {
                 <BellRing className="w-4 h-4 text-indigo-400" />
                 <span>Webhooks &amp; Alerts</span>
               </button>
+
+              <button
+                onClick={() => setIsVulnModalOpen(true)}
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-surface-card border border-rose-500/40 hover:border-rose-500 text-rose-300 hover:text-white text-xs font-bold transition-all shadow-glow-rose active:scale-95"
+              >
+                <Bug className="w-4 h-4 text-accent-rose" />
+                <span>CVE Scanner</span>
+              </button>
             </div>
           </div>
 
@@ -412,11 +423,11 @@ export default function App() {
             </h2>
             <div className="flex items-center gap-2 text-xs font-medium text-accent-cyan">
               <GitBranch className="w-3.5 h-3.5" />
-              <span>Milestone 20 Completed (Real-Time Alert Webhooks: Slack, Discord, Telegram &amp; PagerDuty)</span>
+              <span>Milestone 21 Completed (Vulnerability Assessment &amp; CVE 1-Click Patch Manager)</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-xs">
             <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5">
               <div className="flex items-center justify-between text-accent-emerald font-semibold mb-1">
                 <span>Core &amp; Metrics</span>
@@ -485,19 +496,36 @@ export default function App() {
               <p className="text-slate-400 text-[11px]">Sub-second automated threat containment pipelines &amp; MTTR analytics.</p>
             </div>
 
-            <div className="p-4 rounded-xl border border-indigo-500/40 bg-indigo-500/10 shadow-lg shadow-indigo-500/5">
-              <div className="flex items-center justify-between text-indigo-300 font-semibold mb-1">
+            <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5">
+              <div className="flex items-center justify-between text-accent-emerald font-semibold mb-1">
                 <span className="flex items-center gap-1.5">
                   <BellRing className="w-3.5 h-3.5 text-indigo-400" />
                   Alert Webhooks
                 </span>
-                <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
+                <CheckCircle2 className="w-4 h-4" />
               </div>
               <p className="text-slate-400 text-[11px]">Multi-channel incident escalations (Slack, Discord, Telegram, PagerDuty).</p>
+            </div>
+
+            <div className="p-4 rounded-xl border border-rose-500/40 bg-rose-500/10 shadow-lg shadow-rose-500/5">
+              <div className="flex items-center justify-between text-rose-300 font-semibold mb-1">
+                <span className="flex items-center gap-1.5">
+                  <Bug className="w-3.5 h-3.5 text-accent-rose" />
+                  CVE Patch Manager
+                </span>
+                <CheckCircle2 className="w-4 h-4 text-accent-emerald" />
+              </div>
+              <p className="text-slate-400 text-[11px]">Continuous package audits, CVSS v3.1 scoring &amp; 1-click remediation.</p>
             </div>
           </div>
         </section>
       </main>
+
+      {/* Vulnerability Assessment & CVE Patch Manager Modal */}
+      <VulnerabilityScannerModal
+        isOpen={isVulnModalOpen}
+        onClose={() => setIsVulnModalOpen(false)}
+      />
 
       {/* Real-Time Alert & Webhook Modal */}
       <AlertWebhookModal
