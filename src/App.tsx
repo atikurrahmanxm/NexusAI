@@ -29,7 +29,11 @@ import {
   PanelLeftOpen,
   Search,
   RefreshCw,
-  TrendingUp
+  TrendingUp,
+  Volume2,
+  VolumeX,
+  Command as CommandIcon,
+  AlertTriangle
 } from 'lucide-react';
 import { 
   INITIAL_SECURITY_EVENTS, 
@@ -87,6 +91,8 @@ import { SbomComponent } from './types/supplyChain';
 import { loadSbomComponents, saveSbomComponents } from './services/supplyChainEngine';
 import { SupplyChainModal } from './components/SupplyChainModal';
 import { telemetryGateway, StreamMetrics } from './services/websocketService';
+import { audioFx } from './services/audioFxEngine';
+import { CommandPaletteModal, CommandItem } from './components/CommandPaletteModal';
 
 export default function App() {
   const [systemTime, setSystemTime] = useState(new Date().toLocaleTimeString());
@@ -96,6 +102,10 @@ export default function App() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [toolSearchQuery, setToolSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<'wall' | 'radar' | 'forensics'>('wall');
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [isAudioMuted, setIsAudioMuted] = useState(audioFx.getIsMuted());
+  const [defconLevel, setDefconLevel] = useState<number>(2);
+  const [isDefconDropdownOpen, setIsDefconDropdownOpen] = useState(false);
 
   // Persistent telemetry state from localStorage
   const [events, setEvents] = useState<SecurityEvent[]>(() => {
@@ -163,6 +173,18 @@ export default function App() {
     }
   }, [events]);
 
+  // Global Keyboard Shortcut: Ctrl + K or Cmd + K to open Command Palette
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsCommandPaletteOpen(prev => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   // Live real-time clock, backend probe & WebSocket gateway telemetry subscription
   useEffect(() => {
     const timer = setInterval(() => {
@@ -209,8 +231,48 @@ export default function App() {
     };
   }, []);
 
+  // Toggle Audio Telemetry
+  const handleToggleAudio = () => {
+    const muted = audioFx.toggleMute();
+    setIsAudioMuted(muted);
+  };
+
+  // Change DEFCON Posture
+  const handleSetDefcon = (level: number) => {
+    setDefconLevel(level);
+    setIsDefconDropdownOpen(false);
+    audioFx.playDefconChange();
+
+    const defconTitles: Record<number, string> = {
+      1: 'MAXIMUM ALERT (DEFCON 1)',
+      2: 'HIGH THREAT (DEFCON 2)',
+      3: 'ELEVATED RISK (DEFCON 3)',
+      4: 'GUARDED WATCH (DEFCON 4)',
+      5: 'PEACETIME NOMINAL (DEFCON 5)'
+    };
+
+    const newLog: AuditLogEntry = {
+      id: `audit-${Date.now()}`,
+      timestamp: new Date().toLocaleTimeString(),
+      actorId: activeUser.id,
+      actorName: activeUser.name,
+      actorRole: activeUser.role,
+      category: 'POLICY_CHANGE',
+      details: `Shifted global threat posture to ${defconTitles[level] || 'LEVEL ' + level}`,
+      targetResource: 'DEFCON_POSTURE_CONTROLLER',
+      sourceIp: '127.0.0.1 (SEC-CON)',
+      status: 'SUCCESS',
+      hashSha256: `sha256-${Math.random().toString(16).substring(2, 10)}${Date.now()}`
+    };
+
+    const updatedLogs = [newLog, ...auditLogs.slice(0, 49)];
+    setAuditLogs(updatedLogs);
+    saveAuditLogs(updatedLogs);
+  };
+
   // Handler for simulating real-time attack event
   const handleSimulateAttack = () => {
+    audioFx.playAlertAlarm();
     const newEvent = generateSyntheticSecurityEvent();
     setEvents(prev => [newEvent, ...prev.slice(0, 24)]); // Keep latest 25 events
 
@@ -231,6 +293,7 @@ export default function App() {
 
   // Handler for custom log ingestion batch
   const handleIngestEvents = (newEvents: SecurityEvent[]) => {
+    audioFx.playSonarPing();
     setEvents(prev => [...newEvents, ...prev.slice(0, Math.max(10, 30 - newEvents.length))]);
 
     const maxAnomaly = Math.max(...newEvents.map(e => e.anomalyScore), 1.0);
@@ -250,6 +313,7 @@ export default function App() {
 
   // Handler for campaign injection from Chaos Lab
   const handleInjectCampaign = (campaignEvents: SecurityEvent[]) => {
+    audioFx.playAlertAlarm();
     setEvents(prev => [...campaignEvents, ...prev.slice(0, Math.max(10, 35 - campaignEvents.length))]);
 
     const nowTime = new Date().toTimeString().substring(0, 5);
@@ -268,6 +332,7 @@ export default function App() {
 
   // Reset baseline telemetry
   const handleResetBaseline = () => {
+    audioFx.playKeyClick();
     setEvents(INITIAL_SECURITY_EVENTS);
     setTimeSeries(INITIAL_TIMESERIES_DATA);
     localStorage.removeItem('nexus_secops_events');
@@ -275,6 +340,7 @@ export default function App() {
 
   // Handler for AI Copilot threat mitigation execution
   const handleMitigateThreat = (target: string) => {
+    audioFx.playMitigationSuccess();
     setEvents(prev =>
       prev.map(event => {
         if (event.targetNode.includes(target) || event.sourceIp.includes(target) || event.id.includes(target)) {
@@ -292,6 +358,7 @@ export default function App() {
 
   // Handler for manual status changes in the forensic table
   const handleUpdateEventStatus = (eventId: string, newStatus: IncidentStatus) => {
+    audioFx.playKeyClick();
     setEvents(prev =>
       prev.map(e => e.id === eventId ? { ...e, status: newStatus } : e)
     );
@@ -468,24 +535,192 @@ export default function App() {
     )
   })).filter(section => section.items.length > 0);
 
-  // Flat list of all tools for quick search dropdown
+  // Flat list of all tools for Command Palette
   const allModules = sidebarNavSections.flatMap(section => section.items);
-  const searchResults = toolSearchQuery.trim()
-    ? allModules.filter(item =>
-        item.name.toLowerCase().includes(toolSearchQuery.toLowerCase()) ||
-        item.badge.toLowerCase().includes(toolSearchQuery.toLowerCase())
-      )
-    : [];
+
+  // Command Palette Items
+  const commandPaletteItems: CommandItem[] = [
+    // 1. Actions
+    {
+      id: 'cmd-sim-attack',
+      category: 'ACTIONS',
+      title: 'Simulate Synthetic Attack Vector',
+      subtitle: 'Inject high-intensity adversary telemetry for testing',
+      icon: Flame,
+      color: 'text-accent-rose',
+      badge: 'Execute',
+      onExecute: handleSimulateAttack
+    },
+    {
+      id: 'cmd-exec-audit',
+      category: 'ACTIONS',
+      title: 'Export Executive Audit Dossier (PDF)',
+      subtitle: 'Open printable SOC 2 Type II compliance audit ledger',
+      icon: FileText,
+      color: 'text-accent-emerald',
+      badge: 'PDF',
+      onExecute: () => setIsReportModalOpen(true)
+    },
+    {
+      id: 'cmd-chaos-lab',
+      category: 'ACTIONS',
+      title: 'Launch SecOps Chaos Lab',
+      subtitle: 'Multi-stage adversary attack range simulator',
+      icon: Flame,
+      color: 'text-accent-rose',
+      badge: 'Range',
+      onExecute: () => setIsSimLabOpen(true)
+    },
+    {
+      id: 'cmd-stream-gw',
+      category: 'ACTIONS',
+      title: 'Real-Time WebSocket Gateway',
+      subtitle: 'Configure bi-directional streaming telemetry bus',
+      icon: Radio,
+      color: 'text-accent-cyan',
+      badge: 'WSS',
+      onExecute: () => setIsStreamModalOpen(true)
+    },
+    {
+      id: 'cmd-ingest-logs',
+      category: 'ACTIONS',
+      title: 'Ingest Custom Raw Logs (JSON/Syslog)',
+      subtitle: 'Batch import external security event logs',
+      icon: UploadCloud,
+      color: 'text-indigo-400',
+      badge: 'Ingest',
+      onExecute: () => setIsLogModalOpen(true)
+    },
+    {
+      id: 'cmd-reset-baseline',
+      category: 'ACTIONS',
+      title: 'Reset Telemetry Baseline',
+      subtitle: 'Restore nominal initial events and clear localStorage',
+      icon: RefreshCw,
+      color: 'text-slate-400',
+      badge: 'Reset',
+      onExecute: handleResetBaseline
+    },
+    // 2. DEFCON Posture Levels
+    {
+      id: 'cmd-defcon-1',
+      category: 'DEFCON',
+      title: 'Set DEFCON 1: MAXIMUM ALERT',
+      subtitle: 'Imminent cyber warfare posture & automated BGP null-routing',
+      icon: AlertTriangle,
+      color: 'text-rose-500',
+      badge: 'DEFCON 1',
+      onExecute: () => handleSetDefcon(1)
+    },
+    {
+      id: 'cmd-defcon-2',
+      category: 'DEFCON',
+      title: 'Set DEFCON 2: HIGH THREAT / ARMED',
+      subtitle: 'Armed defense posture with active automated containment',
+      icon: Flame,
+      color: 'text-accent-rose',
+      badge: 'DEFCON 2',
+      onExecute: () => handleSetDefcon(2)
+    },
+    {
+      id: 'cmd-defcon-3',
+      category: 'DEFCON',
+      title: 'Set DEFCON 3: ELEVATED RISK',
+      subtitle: 'Heuristic anomaly detection with heightened threshold',
+      icon: AlertTriangle,
+      color: 'text-accent-amber',
+      badge: 'DEFCON 3',
+      onExecute: () => handleSetDefcon(3)
+    },
+    {
+      id: 'cmd-defcon-4',
+      category: 'DEFCON',
+      title: 'Set DEFCON 4: GUARDED WATCH',
+      subtitle: 'Enhanced edge perimeter logging and proxy inspection',
+      icon: Shield,
+      color: 'text-blue-400',
+      badge: 'DEFCON 4',
+      onExecute: () => handleSetDefcon(4)
+    },
+    {
+      id: 'cmd-defcon-5',
+      category: 'DEFCON',
+      title: 'Set DEFCON 5: PEACETIME / NOMINAL',
+      subtitle: 'Nominal zero-trust operations across all nodes',
+      icon: CheckCircle2,
+      color: 'text-accent-emerald',
+      badge: 'DEFCON 5',
+      onExecute: () => handleSetDefcon(5)
+    },
+    // 3. All 18 Modules
+    ...allModules.map((m, idx) => ({
+      id: `cmd-module-${idx}`,
+      category: 'MONITORING' as const,
+      title: m.name,
+      subtitle: `Open ${m.name} security module`,
+      icon: m.icon,
+      color: m.color,
+      badge: m.badge,
+      onExecute: m.onClick
+    }))
+  ];
 
   return (
     <div className="min-h-screen bg-[#070B14] text-slate-100 flex flex-col font-sans selection:bg-indigo-500/30 selection:text-white">
       {/* 1. Top Executive Bloomberg Cyber Ticker Strip */}
       <div className="h-8 bg-[#090E1A] border-b border-surface-border/70 px-4 md:px-6 flex items-center justify-between text-[11px] font-mono select-none overflow-x-auto no-scrollbar">
         <div className="flex items-center gap-5 shrink-0">
-          {/* DEFCON Status */}
-          <div className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-rose-500/10 border border-rose-500/30 text-accent-rose font-bold">
-            <span className="w-1.5 h-1.5 rounded-full bg-accent-rose animate-ping" />
-            <span>DEFCON 2: ELEVATED</span>
+          {/* Interactive DEFCON Posture Badge & Switcher */}
+          <div className="relative">
+            <button
+              onClick={() => setIsDefconDropdownOpen(!isDefconDropdownOpen)}
+              className={`flex items-center gap-1.5 px-2 py-0.5 rounded border font-bold transition-all cursor-pointer ${
+                defconLevel === 1 
+                  ? 'bg-rose-600/25 border-rose-500 text-rose-300 animate-pulse'
+                  : defconLevel === 2
+                  ? 'bg-rose-500/10 border-rose-500/40 text-accent-rose'
+                  : defconLevel === 3
+                  ? 'bg-amber-500/10 border-amber-500/40 text-accent-amber'
+                  : defconLevel === 4
+                  ? 'bg-blue-500/10 border-blue-500/40 text-blue-400'
+                  : 'bg-emerald-500/10 border-emerald-500/40 text-accent-emerald'
+              }`}
+              title="Click to toggle DEFCON Threat Posture"
+            >
+              <span className={`w-1.5 h-1.5 rounded-full ${
+                defconLevel <= 2 ? 'bg-accent-rose animate-ping' : defconLevel === 3 ? 'bg-amber-400' : 'bg-accent-emerald'
+              }`} />
+              <span>DEFCON {defconLevel}: {
+                defconLevel === 1 ? 'MAX ALERT' : defconLevel === 2 ? 'ELEVATED' : defconLevel === 3 ? 'GUARDED' : defconLevel === 4 ? 'WATCH' : 'NOMINAL'
+              }</span>
+            </button>
+
+            {/* DEFCON Dropdown Menu */}
+            {isDefconDropdownOpen && (
+              <div className="absolute top-full left-0 mt-1 w-52 bg-[#0D1322] border border-surface-border rounded-xl shadow-2xl p-1.5 z-50 font-sans space-y-1">
+                <div className="text-[10px] uppercase font-bold text-slate-500 px-2 py-1">
+                  Change Threat Posture
+                </div>
+                {[
+                  { lvl: 1, label: 'DEFCON 1: MAXIMUM ALERT', color: 'text-rose-400 hover:bg-rose-500/15' },
+                  { lvl: 2, label: 'DEFCON 2: ELEVATED (ARMED)', color: 'text-accent-rose hover:bg-rose-500/10' },
+                  { lvl: 3, label: 'DEFCON 3: ELEVATED RISK', color: 'text-accent-amber hover:bg-amber-500/10' },
+                  { lvl: 4, label: 'DEFCON 4: GUARDED WATCH', color: 'text-blue-400 hover:bg-blue-500/10' },
+                  { lvl: 5, label: 'DEFCON 5: PEACETIME / NOMINAL', color: 'text-accent-emerald hover:bg-emerald-500/10' },
+                ].map((item) => (
+                  <button
+                    key={item.lvl}
+                    onClick={() => handleSetDefcon(item.lvl)}
+                    className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center justify-between cursor-pointer ${item.color} ${
+                      defconLevel === item.lvl ? 'bg-surface-card border border-surface-border' : ''
+                    }`}
+                  >
+                    <span>{item.label}</span>
+                    {defconLevel === item.lvl && <CheckCircle2 className="w-3.5 h-3.5 text-accent-emerald" />}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="flex items-center gap-1 text-slate-400">
@@ -521,6 +756,22 @@ export default function App() {
         </div>
 
         <div className="flex items-center gap-4 shrink-0 pl-4 text-slate-400">
+          {/* Audio Telemetry Toggle Button */}
+          <button
+            onClick={handleToggleAudio}
+            className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-surface border border-surface-border text-slate-300 hover:text-white transition-colors cursor-pointer"
+            title={isAudioMuted ? "Unmute SOC Audio Telemetry" : "Mute SOC Audio Telemetry"}
+          >
+            {isAudioMuted ? (
+              <VolumeX className="w-3 h-3 text-slate-500" />
+            ) : (
+              <Volume2 className="w-3 h-3 text-accent-emerald animate-pulse" />
+            )}
+            <span className="hidden sm:inline font-mono text-[10px]">
+              {isAudioMuted ? 'MUTED' : 'AUDIO'}
+            </span>
+          </button>
+
           <div className="hidden sm:flex items-center gap-1.5 text-[10px]">
             <TerminalIcon className={`w-3 h-3 ${backendHealth.connected ? 'text-accent-emerald' : 'text-accent-cyan'}`} />
             <span className="text-slate-500">ENGINE:</span>
@@ -545,7 +796,7 @@ export default function App() {
           {/* Toggle Sidebar Button */}
           <button
             onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-            className="p-2 rounded-xl bg-surface-card border border-surface-border hover:border-slate-500 text-slate-300 transition-colors"
+            className="p-2 rounded-xl bg-surface-card border border-surface-border hover:border-slate-500 text-slate-300 transition-colors cursor-pointer"
             title={isSidebarCollapsed ? "Expand Navigation Rail" : "Collapse Navigation Rail"}
           >
             {isSidebarCollapsed ? (
@@ -574,58 +825,21 @@ export default function App() {
           </div>
         </div>
 
-        {/* Palantir Command Center Quick Launch Bar */}
+        {/* Palantir Command Center Quick Launch Bar (Opens Command Palette or In-line Search) */}
         <div className="hidden md:flex items-center gap-2.5 flex-1 max-w-xl mx-6 relative">
-          <div className="relative w-full">
-            <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
-            <input 
-              type="text"
-              placeholder="Search 18 modules (e.g., CVE, ITDR, WAAP, STIX, SOAR)..."
-              value={toolSearchQuery}
-              onChange={(e) => setToolSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-8 py-1.5 rounded-xl bg-surface-card border border-surface-border text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-all font-mono"
-            />
-            {toolSearchQuery && (
-              <button
-                onClick={() => setToolSearchQuery('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white text-xs cursor-pointer"
-              >
-                &times;
-              </button>
-            )}
-
-            {/* Instant Search Results Dropdown */}
-            {searchResults.length > 0 && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-[#0D1322] border border-surface-border rounded-xl shadow-2xl p-2 z-50 max-h-72 overflow-y-auto space-y-1 font-sans">
-                <div className="text-[10px] uppercase font-bold text-slate-500 px-2 py-1 flex items-center justify-between border-b border-surface-border/60 pb-1 mb-1">
-                  <span>MATCHING MODULES</span>
-                  <span className="text-accent-cyan font-mono">{searchResults.length} FOUND</span>
-                </div>
-                {searchResults.map((item, idx) => {
-                  const Icon = item.icon;
-                  return (
-                    <button
-                      key={idx}
-                      onClick={() => {
-                        item.onClick();
-                        setToolSearchQuery('');
-                      }}
-                      className="w-full flex items-center justify-between p-2 rounded-lg hover:bg-surface-card text-left transition-colors group cursor-pointer"
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <div className={`p-1.5 rounded-lg bg-surface border border-surface-border group-hover:scale-105 transition-transform ${item.color}`}>
-                          <Icon className="w-3.5 h-3.5" />
-                        </div>
-                        <span className="text-xs font-bold text-slate-200 group-hover:text-white">{item.name}</span>
-                      </div>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-surface-border text-accent-cyan">
-                        {item.badge}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            )}
+          <div 
+            onClick={() => setIsCommandPaletteOpen(true)}
+            className="relative w-full cursor-pointer group"
+            title="Press ⌘K or Ctrl+K to open Command Palette"
+          >
+            <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2 group-hover:text-accent-cyan transition-colors" />
+            <div className="w-full pl-9 pr-14 py-1.5 rounded-xl bg-surface-card border border-surface-border text-xs text-slate-400 group-hover:border-indigo-500/60 transition-all font-mono flex items-center justify-between">
+              <span>Quick command or search modules...</span>
+              <kbd className="px-1.5 py-0.5 rounded bg-surface border border-surface-border text-[10px] text-slate-400 group-hover:text-white flex items-center gap-0.5">
+                <CommandIcon className="w-3 h-3" />
+                <span>K</span>
+              </kbd>
+            </div>
           </div>
         </div>
 
@@ -670,7 +884,7 @@ export default function App() {
           {/* Notification Alerts */}
           <button 
             onClick={() => setIsWebhookModalOpen(true)}
-            className="relative p-2 rounded-xl bg-surface-card border border-surface-border hover:border-slate-500 text-slate-300 transition-colors"
+            className="relative p-2 rounded-xl bg-surface-card border border-surface-border hover:border-slate-500 text-slate-300 transition-colors cursor-pointer"
             title="Active Incident Alerts & Webhooks"
           >
             <Bell className="w-4 h-4" />
@@ -704,14 +918,31 @@ export default function App() {
         >
           {/* Scrollable Navigation Items */}
           <div className="overflow-y-auto flex-1 p-3 space-y-5">
-            {/* Quick search input in sidebar if collapsed/expanded */}
             {!isSidebarCollapsed && (
-              <div className="px-1 pt-1 pb-2">
-                <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-2 mb-2 flex items-center justify-between">
+              <div className="px-1 pt-1 pb-2 space-y-2">
+                <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-2 flex items-center justify-between">
                   <span>ENTERPRISE NAVIGATOR</span>
-                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-surface-card border border-surface-border text-indigo-400">
+                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-surface-card border border-surface-border text-indigo-400 font-mono">
                     18 TOOLS
                   </span>
+                </div>
+                <div className="relative px-1">
+                  <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-2" />
+                  <input
+                    type="text"
+                    value={toolSearchQuery}
+                    onChange={(e) => setToolSearchQuery(e.target.value)}
+                    placeholder="Filter tools..."
+                    className="w-full bg-surface-card border border-surface-border rounded-lg pl-7 pr-6 py-1 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500/60 font-mono"
+                  />
+                  {toolSearchQuery && (
+                    <button
+                      onClick={() => setToolSearchQuery('')}
+                      className="absolute right-3 top-1 text-slate-400 hover:text-white text-xs cursor-pointer"
+                    >
+                      &times;
+                    </button>
+                  )}
                 </div>
               </div>
             )}
@@ -730,7 +961,7 @@ export default function App() {
                       <button
                         key={iIdx}
                         onClick={item.onClick}
-                        className={`w-full flex items-center gap-3 p-2 rounded-xl text-left transition-all group ${
+                        className={`w-full flex items-center gap-3 p-2 rounded-xl text-left transition-all group cursor-pointer ${
                           isSidebarCollapsed 
                             ? 'justify-center hover:bg-surface-card hover:border-slate-700' 
                             : 'hover:bg-surface-card/80 hover:border-slate-700/60'
@@ -771,7 +1002,7 @@ export default function App() {
                 </div>
                 <button
                   onClick={() => setIsSidebarCollapsed(true)}
-                  className="w-full flex items-center justify-center gap-2 py-1.5 rounded-lg bg-surface-card border border-surface-border hover:border-slate-600 text-slate-400 hover:text-white text-xs font-medium transition-colors"
+                  className="w-full flex items-center justify-center gap-2 py-1.5 rounded-lg bg-surface-card border border-surface-border hover:border-slate-600 text-slate-400 hover:text-white text-xs font-medium transition-colors cursor-pointer"
                 >
                   <PanelLeftClose className="w-3.5 h-3.5" />
                   <span>Collapse Rail</span>
@@ -780,7 +1011,7 @@ export default function App() {
             ) : (
               <button
                 onClick={() => setIsSidebarCollapsed(false)}
-                className="w-full flex items-center justify-center p-2 rounded-lg bg-surface-card border border-surface-border hover:border-slate-600 text-slate-400 hover:text-white transition-colors"
+                className="w-full flex items-center justify-center p-2 rounded-lg bg-surface-card border border-surface-border hover:border-slate-600 text-slate-400 hover:text-white transition-colors cursor-pointer"
                 title="Expand Navigation Rail"
               >
                 <PanelLeftOpen className="w-4 h-4 text-accent-cyan" />
@@ -817,7 +1048,7 @@ export default function App() {
               <div className="flex items-center p-1 rounded-xl bg-background border border-surface-border text-xs font-semibold">
                 <button
                   onClick={() => setActiveTab('wall')}
-                  className={`px-3 py-1.5 rounded-lg transition-all ${
+                  className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                     activeTab === 'wall'
                       ? 'bg-primary text-white shadow-glow-primary'
                       : 'text-slate-400 hover:text-slate-200'
@@ -827,7 +1058,7 @@ export default function App() {
                 </button>
                 <button
                   onClick={() => setActiveTab('radar')}
-                  className={`px-3 py-1.5 rounded-lg transition-all ${
+                  className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                     activeTab === 'radar'
                       ? 'bg-primary text-white shadow-glow-primary'
                       : 'text-slate-400 hover:text-slate-200'
@@ -837,7 +1068,7 @@ export default function App() {
                 </button>
                 <button
                   onClick={() => setActiveTab('forensics')}
-                  className={`px-3 py-1.5 rounded-lg transition-all ${
+                  className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                     activeTab === 'forensics'
                       ? 'bg-primary text-white shadow-glow-primary'
                       : 'text-slate-400 hover:text-slate-200'
@@ -849,7 +1080,7 @@ export default function App() {
 
               <button
                 onClick={() => setIsLogModalOpen(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-card border border-indigo-500/40 hover:border-indigo-400 text-indigo-300 hover:text-white text-xs font-bold transition-all shadow-glow-primary active:scale-95"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-card border border-indigo-500/40 hover:border-indigo-400 text-indigo-300 hover:text-white text-xs font-bold transition-all shadow-glow-primary active:scale-95 cursor-pointer"
               >
                 <UploadCloud className="w-3.5 h-3.5 text-accent-cyan" />
                 <span>Ingest Logs</span>
@@ -857,7 +1088,7 @@ export default function App() {
 
               <button
                 onClick={handleResetBaseline}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-card border border-surface-border hover:border-slate-500 text-slate-400 hover:text-white text-xs font-medium transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-card border border-surface-border hover:border-slate-500 text-slate-400 hover:text-white text-xs font-medium transition-colors cursor-pointer"
                 title="Reset In-Memory & LocalStorage Telemetry Baseline"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
@@ -1144,7 +1375,14 @@ export default function App() {
         </main>
       </div>
 
-      {/* 4. All 18 Interactive Modals (100% Maintained & Active) */}
+      {/* 4. Command Palette Modal (Cmd + K) */}
+      <CommandPaletteModal
+        isOpen={isCommandPaletteOpen}
+        onClose={() => setIsCommandPaletteOpen(false)}
+        commands={commandPaletteItems}
+      />
+
+      {/* 5. All 18 Interactive Modals (100% Maintained & Active) */}
       <RbacAuditModal
         isOpen={isRbacModalOpen}
         onClose={() => setIsRbacModalOpen(false)}
@@ -1319,7 +1557,7 @@ export default function App() {
         onResetBaseline={handleResetBaseline}
       />
 
-      {/* 5. Enterprise Palantir & Bloomberg SOC Footer */}
+      {/* 6. Enterprise Palantir & Bloomberg SOC Footer */}
       <footer className="border-t border-surface-border/80 bg-[#090E1A] py-3.5 px-6 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400 font-mono">
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-accent-emerald animate-pulse" />

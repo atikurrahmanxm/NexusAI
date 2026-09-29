@@ -15,6 +15,7 @@ import {
   computeCountryMetrics 
 } from '../services/geoIpEngine';
 import { ActiveAttackVector } from '../types/geomap';
+import { audioFx } from '../services/audioFxEngine';
 
 interface GlobalThreatMapProps {
   events: SecurityEvent[];
@@ -42,6 +43,7 @@ export const GlobalThreatMap: React.FC<GlobalThreatMapProps> = ({ events }) => {
 
   const handleMitigate = (vectorId: string) => {
     setMitigatedVectors(prev => new Set(prev).add(vectorId));
+    audioFx.playMitigationSuccess();
   };
 
   return (
