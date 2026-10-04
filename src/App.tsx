@@ -33,7 +33,8 @@ import {
   Volume2,
   VolumeX,
   Command as CommandIcon,
-  AlertTriangle
+  AlertTriangle,
+  Sparkles
 } from 'lucide-react';
 import { 
   INITIAL_SECURITY_EVENTS, 
@@ -93,6 +94,7 @@ import { SupplyChainModal } from './components/SupplyChainModal';
 import { telemetryGateway, StreamMetrics } from './services/websocketService';
 import { audioFx } from './services/audioFxEngine';
 import { CommandPaletteModal, CommandItem } from './components/CommandPaletteModal';
+import { MissionTourModal } from './components/MissionTourModal';
 
 export default function App() {
   const [systemTime, setSystemTime] = useState(new Date().toLocaleTimeString());
@@ -103,6 +105,7 @@ export default function App() {
   const [toolSearchQuery, setToolSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<'wall' | 'radar' | 'forensics'>('wall');
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [isMissionTourOpen, setIsMissionTourOpen] = useState(false);
   const [isAudioMuted, setIsAudioMuted] = useState(audioFx.getIsMuted());
   const [defconLevel, setDefconLevel] = useState<number>(2);
   const [isDefconDropdownOpen, setIsDefconDropdownOpen] = useState(false);
@@ -380,6 +383,13 @@ export default function App() {
           }
         },
         {
+          name: 'Mission Tour & Demo',
+          icon: Sparkles,
+          color: 'text-accent-cyan',
+          badge: 'Interactive',
+          onClick: () => setIsMissionTourOpen(true)
+        },
+        {
           name: 'Server Fleet Mesh',
           icon: Server,
           color: 'text-accent-cyan',
@@ -541,6 +551,16 @@ export default function App() {
   // Command Palette Items
   const commandPaletteItems: CommandItem[] = [
     // 1. Actions
+    {
+      id: 'cmd-mission-tour',
+      category: 'ACTIONS',
+      title: 'Launch Interactive Mission Tour & Benchmarks',
+      subtitle: 'End-to-end incident lifecycle tour, attack scenarios & metrics',
+      icon: Sparkles,
+      color: 'text-accent-cyan',
+      badge: 'Tour',
+      onExecute: () => setIsMissionTourOpen(true)
+    },
     {
       id: 'cmd-sim-attack',
       category: 'ACTIONS',
@@ -845,6 +865,16 @@ export default function App() {
 
         {/* Quick Executive Action Buttons & Persona Switcher */}
         <div className="flex items-center gap-2.5">
+          {/* Mission Tour & Showcase Button */}
+          <button
+            onClick={() => setIsMissionTourOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600/40 via-primary/30 to-purple-600/30 border border-indigo-500/60 hover:border-indigo-400 text-indigo-300 hover:text-white text-xs font-bold transition-all shadow-glow-primary active:scale-95 cursor-pointer"
+            title="Launch Interactive Enterprise Mission Tour & Benchmarks"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-accent-cyan animate-pulse" />
+            <span className="hidden sm:inline">Mission Tour</span>
+          </button>
+
           <button
             onClick={handleSimulateAttack}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-rose-600/30 to-rose-700/20 border border-rose-500/50 hover:border-rose-400 text-rose-300 hover:text-white text-xs font-bold transition-all shadow-glow-rose active:scale-95 cursor-pointer"
@@ -1077,6 +1107,14 @@ export default function App() {
                   Deep Forensics
                 </button>
               </div>
+
+              <button
+                onClick={() => setIsMissionTourOpen(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-indigo-500/20 to-purple-500/20 hover:from-indigo-500/30 hover:to-purple-500/30 border border-indigo-500/50 text-indigo-300 hover:text-white text-xs font-bold transition-all shadow-glow-primary active:scale-95 cursor-pointer"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-accent-cyan animate-pulse" />
+                <span>Tour &amp; Scenarios</span>
+              </button>
 
               <button
                 onClick={() => setIsLogModalOpen(true)}
@@ -1555,6 +1593,18 @@ export default function App() {
         onClose={() => setIsSimLabOpen(false)}
         onInjectCampaign={handleInjectCampaign}
         onResetBaseline={handleResetBaseline}
+      />
+
+      <MissionTourModal
+        isOpen={isMissionTourOpen}
+        onClose={() => setIsMissionTourOpen(false)}
+        onTriggerAttack={handleSimulateAttack}
+        onSetDefcon={handleSetDefcon}
+        onOpenModule={(mod) => {
+          if (mod === 'RBAC') setIsRbacModalOpen(true);
+          else if (mod === 'SOAR') setIsSoarModalOpen(true);
+          else if (mod === 'FLEET') setIsFleetModalOpen(true);
+        }}
       />
 
       {/* 6. Enterprise Palantir & Bloomberg SOC Footer */}
